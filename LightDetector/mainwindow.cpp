@@ -354,8 +354,9 @@ void MainWindow::setNormalVecs(int distance){
         int dx = endPos.x - startPos.x;
         int dy = endPos.y - startPos.y;
 
-        //Point normalOne = Point(-dy,dx); //Scheinen wir nicht zu brauchen, da diese Normale immer in dem Objekt liegt
-        Point normalTwo = Point(dy,-dx);
+        //Point normalOne = Point(dy,-dx); //Scheinen wir nicht zu brauchen, da diese Normale immer in dem Objekt liegt
+        Point normalTwo = Point(-dy,dx);
+
         //TO DO: Länge der Normalen angleichen
         normals.push_back(normalTwo);
     }
