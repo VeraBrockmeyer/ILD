@@ -48,7 +48,6 @@ protected:
 
 private:
     Ui::MainWindow *ui;
-    void showVisual();
     void hideVisual();
     cv::Mat QImage2Mat(QImage const& src);
     QImage Mat2QImage(cv::Mat const& src);
@@ -57,11 +56,8 @@ private:
     void markNrOfContour();
     void deleteDrawnSelection();
     void paintSubContour();
-    void setNormalVecs(int distance);
     void drawNormalVecs(int distance);
     void calculateIntensity(int R, vector<cv::Point> N, vector<cv::Point> L, int A);
-    void createM();
-    void cropContour(QRect rect);
 
 
 };

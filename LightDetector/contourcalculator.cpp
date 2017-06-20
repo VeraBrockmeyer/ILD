@@ -120,7 +120,7 @@ void  ContourCalculator::computePixelCoordsAlongContour(){
         tempLineImg= Mat::zeros(tempLineImg.size(),tempLineImg.type());
         line(tempLineImg,SubContour[i],SubContour[i+1],Scalar(255,255,255));
         if (i==SubContour.size()-2) {
-            imshow("lastLine",tempLineImg);
+            //imshow("lastLine",tempLineImg);
         }
         runLineIterator(tempLineImg, SubContour[i],SubContour[i+1]);
         tempLineImg.release();
@@ -132,7 +132,7 @@ void  ContourCalculator::computePixelCoordsAlongContour(){
     foreach (Point c, SampledSubContour) {
     circle(debug,c,1,Scalar(0,0,255));
     }
-    imshow("pixel Contour",debug);
+    //imshow("pixel Contour",debug);
 
 }
 
@@ -142,8 +142,7 @@ void ContourCalculator::savePartOfContour(QRect CroppedRect){
     int yBoxHigh = CroppedRect.bottomRight().y();
     int yBoxLow = CroppedRect.topLeft().y();
 
-    printf("\n Laenge der Kontur insgesamt: %i " , MainContour.at(0).size());
-    printf("\n Laenge der Subkontur zu Beginn: %i (Soll 0 sein!)" , SubContour.size());
+
     Mat imageDebug = Mat::zeros(imageCV.size(), CV_8UC3);
     Rect r = Rect(Point(xBoxHigh,yBoxHigh),Point(xBoxLow,yBoxLow));
     rectangle(imageDebug,r,Scalar(0,0,255));
@@ -163,10 +162,10 @@ void ContourCalculator::savePartOfContour(QRect CroppedRect){
 
         }
     }
-    printf("\n Laenge der Subkontur nach Selektierung: %i (Soll Anzahl aller Konturenpunkte innerhalb der Auswahl zaehlen)" , SubContour.size());
+    //printf("\n Laenge der Subkontur nach Selektierung: %i (Soll Anzahl aller Konturenpunkte innerhalb der Auswahl zaehlen)" , SubContour.size());
     if(SubContour.size()>=3){
        sortSubContour();
-       imshow("Debug", imageDebug);
+      // imshow("Debug", imageDebug);
        computePixelCoordsAlongContour();
        printf("\n Laenge der SampledSubKontur insgesamt: %i " , SampledSubContour.size());
 
