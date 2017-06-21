@@ -123,7 +123,7 @@ void  ContourCalculator::computePixelCoordsAlongContour(){
             //imshow("lastLine",tempLineImg);
         }
         runLineIterator(tempLineImg, SubContour[i],SubContour[i+1]);
-        tempLineImg.release();
+       // tempLineImg.release();
     }
     Mat debug = imageCV.clone();
     circle(debug,SampledSubContour[0],5,Scalar(255,0,0));
@@ -167,7 +167,7 @@ void ContourCalculator::savePartOfContour(QRect CroppedRect){
        sortSubContour();
       // imshow("Debug", imageDebug);
        computePixelCoordsAlongContour();
-       printf("\n Laenge der SampledSubKontur insgesamt: %i " , SampledSubContour.size());
+      // printf("\n Laenge der SampledSubKontur insgesamt: %i " , SampledSubContour.size());
 
       }
 

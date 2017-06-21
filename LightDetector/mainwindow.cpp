@@ -17,7 +17,7 @@ QRect CroppedRect;
 QPen redPen, redPenThick, whitePen, bluePen;
 int posImageLableX = 0;
 int posImageLableY = 0;
-int distanceOfNormals=10;
+int distanceOfNormals=20;
 
 bool isSelect;
 bool isDrawing;
@@ -113,17 +113,40 @@ void MainWindow::on_btm_restart_clicked()
 
 void MainWindow::on_btm_ShowLV_clicked()
 {
-    jc->calculateIntensityNew(distanceOfNormals, cc->getSampledSubContour());
+    jc->calculateIntensity(distanceOfNormals, cc->getSampledSubContour(), imageCV);
     jc->calculateLightVector();
-    ui->btm_ShowLV->hide();
+    drawLV();
+   ui->btm_ShowLV->hide();
+}
+
+void MainWindow::drawLV(){
+    QPainter LVPainter(&imageQT);
+    LVPainter.setPen(whitePen);
+    Point LV = jc->getLightVector();
+    int middleOfContour;
+    int cLength = cc->getSampledSubContour().size(); //length of contour
+    if(cLength%2 == 0){
+        middleOfContour = (cLength-1)/2;
+    }
+    else if(cLength%2 == 1){
+        middleOfContour = (cLength-2)/2;
+    }
+    int PosX = cc->getSampledSubContour().at(middleOfContour).x;
+    int PosY = cc->getSampledSubContour().at(middleOfContour).y;
+    int factor=7;
+    LVPainter.drawLine(PosX, PosY,PosX+(LV.x*factor), PosY+(LV.y*factor));
+    ui->lbl_image->setPixmap(QPixmap::fromImage(imageQT));
+    LVPainter.end();
 }
 
 void MainWindow::on_btm_ShowN_clicked()
 {
     jc->setNormalVecs(distanceOfNormals, cc->getSampledSubContour());
     drawNormalVecs(distanceOfNormals);
-    ui->btm_intensity->show();
+   // ui->btm_intensity->show();
     ui->btm_ShowN->hide();
+    ui->btm_ShowLV->show();
+
 }
 
 
@@ -191,7 +214,7 @@ void MainWindow::mousePressEvent(QMouseEvent *event){
     CroppedRect.setTopLeft(QPoint(event->pos().x()-posImageLableX, event->pos().y()-posImageLableY));
     paintStartPoint();
     markNrOfContour();
-    printf("\n Cropped Rect top left x=%i und y=%i", CroppedRect.topLeft().x(), CroppedRect.topLeft().y());
+   // printf("\n Cropped Rect top left x=%i und y=%i", CroppedRect.topLeft().x(), CroppedRect.topLeft().y());
     }
 }
 
@@ -267,7 +290,6 @@ void MainWindow::markNrOfContour(){
 void MainWindow::on_btm_saveSelection_clicked(){
   ui->btm_saveSelection->hide();
   ui->btm_deleteSelection->hide();
-  ui->btm_ShowLV->show();
    ui->btm_ShowN->show();
   //cropContour(CroppedRect);
   cc->savePartOfContour(CroppedRect);

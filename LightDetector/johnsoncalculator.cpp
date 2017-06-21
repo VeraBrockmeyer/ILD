@@ -11,19 +11,24 @@ JohnsonCalculator::~JohnsonCalculator(){
 }
 
 void JohnsonCalculator::calculateLightVector(){
-//    dlib::solve_least_squares_lm(objective_delta_stop_strategy(1e-7).be_verbose(),
-//                                  residual,
-//                                  residual_derivative,
-//                                  data_samples,
-//                                  x);
-//   CvLevMarq solver;
-//   solver.init	(	3,
-//                    normals.size(),
-//                    cvTermCriteria(CV_TERMCRIT_EPS | CV_TERMCRIT_ITER, 30, DBL_EPSILON),
-//                    false
-//                    )	;
-//  printf("\n Solver initialisiert.");
-//   bool proceed = solver.update( const CvMat *&param, CvMat *&J, CvMat *&err );
+
+   CvLevMarq solver;
+   solver.init(3, normals.size(),  cvTermCriteria(CV_TERMCRIT_EPS | CV_TERMCRIT_ITER, 30, DBL_EPSILON), false);
+
+   const CvMat* param = 0;
+         CvMat* jac = 0;
+         CvMat* err = 0;
+   bool proceed = solver.update(param, jac, err);
+
+   //printf(" \n Solver Error Norm %f" , solver.errNorm);
+   //printf("\n Groesse Param cols: %i und rows: %i", param->cols, param->rows);
+
+   //hier für Lx und Ly das Ergebnis der Minimierung übergeben, dann wird LV in weiß ins Bild gemalt.
+   int Lx = 2;
+   int Ly = 3;
+   Point L = Point(Lx,Ly);
+   setLightVector(L);
+
 }
 
 
@@ -56,23 +61,11 @@ void JohnsonCalculator::calculateLightVector(){
     }
     }
 
-    void JohnsonCalculator::calculateIntensityNew(const int distance, vector<Point> gss){
-        Point intensityXY;
-        for (int i =0; i< normals.size(); i++){
-            int intX = gss.at(i*distance).x - i * normals.at(i).x;
-            int intY= gss.at(i*distance).y - i * normals.at(i).y ;
-
-            intensityXY.x = intX;
-            intensityXY.y = intY;
-
-            printf("\n Intensität an den Koordinaten (%i,%i) betraegt: x=%i und y=%i", gss.at(i*distance).x, gss.at(i*distance).y , intensityXY.x , intensityXY.y);
-            intensity.push_back(intensityXY);
-        }
-    }
 
     void JohnsonCalculator::clearNormals(){
      normals.clear();
     }
+
 
     void JohnsonCalculator::setNormalVecs(const int distance, vector<Point> gss )
     {
@@ -84,14 +77,6 @@ void JohnsonCalculator::calculateLightVector(){
 
             //Point normalOne = Point(dy,-dx);
             Point normalAsPoint = Point(-dy,dx);
-
-           // printf("\n \n Before Normalisation x=%i und y=%i" , normalAsPoint.x, normalAsPoint.y);
-
- //           normalAsPoint.x = normalAsPoint.x / (normalAsPoint.x + normalAsPoint.y);
-//            normalAsPoint.y /= (normalAsPoint.x + normalAsPoint.y);
-
-           // printf("\n AFTER Normalisation x=%i und y=%i" , normalAsPoint.x, normalAsPoint.y);
-
             normals.push_back(normalAsPoint);
        }
         //printf("\n Anzahl Normalen: %i" , normals.size());
@@ -103,3 +88,29 @@ void JohnsonCalculator::calculateLightVector(){
     {
         return normals;
     }
+
+     Point JohnsonCalculator::getLightVector() const{
+         return lightvector;
+     }
+
+      void JohnsonCalculator::setLightVector(const Point lv){
+          lightvector = lv;
+      }
+
+
+     void JohnsonCalculator::calculateIntensity(const int distance, vector<Point> gss, Mat img){
+          I =  Mat::zeros(normals.size(),1 , CV_8U);
+          printf("Size of I: %i ; Size of normals: %i", I.size().height, normals.size());
+          for(int i = 0; i < gss.size()-distance; i+=distance){
+              Point p = gss.at(i);
+              Vec3b intensity = img.at<Vec3b>(p.y, p.x);
+              uchar blue = intensity.val[0];
+              uchar green = intensity.val[1];
+              uchar red = intensity.val[2];
+              uchar val = 0.299*red + 0.587*green + 0.114*blue;
+              I.at<uchar>(i, 0) = val;
+              //printf("Int Val %i", val);
+
+           }
+          //imshow("I",I);
+      }

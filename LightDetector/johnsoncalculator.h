@@ -17,14 +17,16 @@ public:
     void clearNormals();
     void setNormalVecs(const int distance, vector<Point> gss );
     void calculateLightVector();
-    void calculateIntensityNew(const int distance, vector<Point> gss);
-
+    Point getLightVector() const;
+    void setLightVector(const Point lv);
+    void calculateIntensity(const int distance, vector<Point> gss, Mat img);
 
 
 private:
-    Mat M;
+    Mat M, I;
     vector<Point> normals;
     vector<Point> intensity;
+    Point lightvector;
 
 };
 
