@@ -11,21 +11,24 @@ JohnsonCalculator::~JohnsonCalculator(){
 }
 
 void JohnsonCalculator::calculateLightVector(){
-    //    dlib::solve_least_squares_lm(objective_delta_stop_strategy(1e-7).be_verbose(),
-    //                                  residual,
-    //                                  residual_derivative,
-    //                                  data_samples,
-    //                                  x);
-    //   CvLevMarq solver;
-    //   solver.init	(	3,
-    //                    normals.size(),
-    //                    cvTermCriteria(CV_TERMCRIT_EPS | CV_TERMCRIT_ITER, 30, DBL_EPSILON),
-    //                    false
-    //                    )	;
-    //  printf("\n Solver initialisiert.");
-    //   bool proceed = solver.update( const CvMat *&param, CvMat *&J, CvMat *&err );
     Mat v ;
-    cv::solve(I,M, v, DECOMP_QR );
+    cv::solve(M,I,v, DECOMP_SVD );
+    printf("\n v cols: %i, rows: %i" , v.cols, v.rows);
+    printf("\n v (%f,%f)" , v.at<float>(0,0), v.at<float>(1,0));
+    Point L;
+    int Lx =  v.at<float>(0,0);
+    int Ly =  v.at<float>(1,0);
+    L = Point(Lx,Ly);
+    setLightvector(L);
+    printf("Lightvector (%i,%i)" , Lx,Ly);
+}
+
+void JohnsonCalculator::setLightvector(Point L){
+    lightvector = L;
+}
+
+Point JohnsonCalculator::getLightvector(){
+    return lightvector;
 }
 
 
@@ -35,11 +38,10 @@ void JohnsonCalculator::calculateLightVector(){
 void JohnsonCalculator::createM(){
     M =  Mat::zeros(4,2 , CV_32F);
     for(int i = 0; i< 4; i++){
-        M.at<int>(i,0) = normals.at(i).x ;
-        M.at<int>(i,1) = 1 ;
-//        M.at<int>(i,1) = normals.at(i).y ;
-//        M.at<int>(i,2) = 1 ;
-        //printf("\n Zeile %i von M: %i, %i, %i", i, M.at<int>(i,0), M.at<int>(i,1),  M.at<int>(i,2) );
+        M.at<float>(i,0) = normals.at(i).x ;
+        M.at<float>(i,1) = normals.at(i).y ;
+        M.at<float>(i,2) = 1.f ;
+        printf("\n Zeile %i von M: %f, %f, %f", i, M.at<float>(i,0), M.at<float>(i,1),  M.at<float>(i,2) );
     }
 
     //imshow("Matrix M", M);
@@ -61,7 +63,7 @@ void JohnsonCalculator::calculateIntensity(const int distance, vector<Point> gss
         uchar red = intensity.val[2];
         float val = 0.299*red + 0.587*green + 0.114*blue;
         I.at<float>(i, 0) = val;
-        printf("Int Val %f",  I.at<float>(i, 0));
+        printf("/n Intensity: %f",  I.at<float>(i, 0));
         if(counter==4)break;
     }
     //imshow("I",I);

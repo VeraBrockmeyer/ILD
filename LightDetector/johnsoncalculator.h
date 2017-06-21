@@ -19,12 +19,15 @@ public:
     void setNormalVecs(const int distance, vector<Point> gss );
     void calculateLightVector();
    // void drawNormalVecs(int distance);
+    void setLightvector(Point L);
+    Point getLightvector();
 
 
 
 private:
     Mat M,I;
     vector<Point2f> normals;
+    Point lightvector;
 
 };
 

@@ -115,7 +115,8 @@ void MainWindow::on_btm_ShowLV_clicked()
 {
     jc->calculateIntensity(distanceOfNormals, cc->getSampledSubContour(), imageCV);
     jc->calculateLightVector();
-    //ui->btm_ShowLV->hide();
+    drawLV();
+    ui->btm_ShowLV->hide();
 }
 
 void MainWindow::on_btm_ShowN_clicked()
@@ -357,5 +358,25 @@ void MainWindow::on_btm_intensity_clicked()
     //    jc->calculateIntensity(1, jc->getNormals(), L, 4);
     ui->btm_intensity->hide();
 }
+
+void MainWindow::drawLV(){
+     QPainter LVPainter(&imageQT);
+     LVPainter.setPen(whitePen);
+     Point LV = jc->getLightvector();
+     int middleOfContour;
+     int cLength = cc->getSampledSubContour().size(); //length of contour
+     if(cLength%2 == 0){
+         middleOfContour = (cLength-1)/2;
+     }
+     else if(cLength%2 == 1){
+         middleOfContour = (cLength-2)/2;
+     }
+     int PosX = cc->getSampledSubContour().at(middleOfContour).x;
+     int PosY = cc->getSampledSubContour().at(middleOfContour).y;
+     int factor=7;
+     LVPainter.drawLine(PosX, PosY,PosX+(LV.x*factor), PosY+(LV.y*factor));
+     ui->lbl_image->setPixmap(QPixmap::fromImage(imageQT));
+     LVPainter.end();
+  }
 
 
