@@ -24,6 +24,8 @@ void JohnsonCalculator::calculateLightVector(){
     //                    )	;
     //  printf("\n Solver initialisiert.");
     //   bool proceed = solver.update( const CvMat *&param, CvMat *&J, CvMat *&err );
+    Mat v ;
+    cv::solve(I,M, v, DECOMP_QR );
 }
 
 
@@ -31,11 +33,12 @@ void JohnsonCalculator::calculateLightVector(){
 //M=( N1x, N1y, 1 )
 //  ( ........... )
 void JohnsonCalculator::createM(){
-    M =  Mat::zeros(normals.size(),3 , CV_8U);
-    for(int i = 0; i< normals.size(); i++){
+    M =  Mat::zeros(4,2 , CV_32F);
+    for(int i = 0; i< 4; i++){
         M.at<int>(i,0) = normals.at(i).x ;
-        M.at<int>(i,1) = normals.at(i).y ;
-        M.at<int>(i,2) = 1 ;
+        M.at<int>(i,1) = 1 ;
+//        M.at<int>(i,1) = normals.at(i).y ;
+//        M.at<int>(i,2) = 1 ;
         //printf("\n Zeile %i von M: %i, %i, %i", i, M.at<int>(i,0), M.at<int>(i,1),  M.at<int>(i,2) );
     }
 
@@ -46,20 +49,22 @@ void JohnsonCalculator::createM(){
 
 
 void JohnsonCalculator::calculateIntensity(const int distance, vector<Point> gss, Mat img){
-    I =  Mat::zeros(normals.size(),1 , CV_8U);
+    I =  Mat::zeros(4,1 , CV_32F);
     printf("Size of I: %i ; Size of normals: %i", I.size().height, normals.size());
+  int  counter=0;
     for(int i = 0; i < gss.size()-distance; i+=distance){
+        counter ++;
         Point p = gss.at(i);
         Vec3b intensity = img.at<Vec3b>(p.y, p.x);
         uchar blue = intensity.val[0];
         uchar green = intensity.val[1];
         uchar red = intensity.val[2];
-        uchar val = 0.299*red + 0.587*green + 0.114*blue;
-        I.at<uchar>(i, 0) = val;
-        printf("Int Val %i", val);
-
+        float val = 0.299*red + 0.587*green + 0.114*blue;
+        I.at<float>(i, 0) = val;
+        printf("Int Val %f",  I.at<float>(i, 0));
+        if(counter==4)break;
     }
-    imshow("I",I);
+    //imshow("I",I);
 }
 
 void JohnsonCalculator::clearNormals(){
@@ -71,11 +76,11 @@ void JohnsonCalculator::setNormalVecs(const int distance, vector<Point> gss )
     for(int i = 0; i < gss.size()-distance; i+=distance){
         Point startPos = gss.at(i);
         Point endPos = gss.at(i+distance);
-        int dx = endPos.x - startPos.x;
-        int dy = endPos.y - startPos.y;
+        float dx = endPos.x - startPos.x;
+        float dy = endPos.y - startPos.y;
 
         //Point normalOne = Point(dy,-dx);
-        Point normalAsPoint = Point(-dy,dx);
+        Point2f normalAsPoint = Point(-dy,dx);
 
         normals.push_back(normalAsPoint);
     }
@@ -84,7 +89,7 @@ void JohnsonCalculator::setNormalVecs(const int distance, vector<Point> gss )
 
 }
 
-vector<Point> JohnsonCalculator::getNormals() const
+vector<Point2f> JohnsonCalculator::getNormals() const
 {
     return normals;
 }

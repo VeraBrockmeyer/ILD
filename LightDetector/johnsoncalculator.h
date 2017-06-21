@@ -14,7 +14,7 @@ public:
     void createM();
     void calculateIntensity(const int distance, vector<Point> gss, Mat img);
     //void setNormals(const vector<Point>  &value);
-    vector<Point> getNormals() const;
+    vector<Point2f> getNormals() const;
     void clearNormals();
     void setNormalVecs(const int distance, vector<Point> gss );
     void calculateLightVector();
@@ -24,7 +24,7 @@ public:
 
 private:
     Mat M,I;
-    vector<Point> normals;
+    vector<Point2f> normals;
 
 };
 

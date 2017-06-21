@@ -114,7 +114,7 @@ void MainWindow::on_btm_restart_clicked()
 void MainWindow::on_btm_ShowLV_clicked()
 {
     jc->calculateIntensity(distanceOfNormals, cc->getSampledSubContour(), imageCV);
-    // jc->calculateLightVector();
+    jc->calculateLightVector();
     //ui->btm_ShowLV->hide();
 }
 

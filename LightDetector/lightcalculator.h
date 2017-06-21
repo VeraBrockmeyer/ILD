@@ -6,6 +6,7 @@ class LightCalculator
 {
 public:
     LightCalculator();
+    void runLightCalculator(cv::Mat M, cv::Mat I);
 };
 
 #endif // LIGHTCALCULATOR_H

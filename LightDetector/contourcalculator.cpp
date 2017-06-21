@@ -23,9 +23,7 @@ ContourCalculator::~ContourCalculator(){
      // Find associated Contours and draw them (in our case it) into the Mat imageWithContours
      findContours(imageCanny, MainContour, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0,0));
      printf("\n Anzahl Konturen: %i " , MainContour.size());
-     //imshow("Ausgangsbild", imageInCV);
-     //imshow("Verkleinerte Kontur", imageAfterMorph);
-    // imshow("Canny ", imageCanny);
+
  }
 
  std::vector<cv::Vec4i> ContourCalculator::getHierarchy() const
@@ -123,7 +121,7 @@ void  ContourCalculator::computePixelCoordsAlongContour(){
             //imshow("lastLine",tempLineImg);
         }
         runLineIterator(tempLineImg, SubContour[i],SubContour[i+1]);
-        tempLineImg.release();
+        //tempLineImg.release();
     }
     Mat debug = imageCV.clone();
     circle(debug,SampledSubContour[0],5,Scalar(255,0,0));
