@@ -36,7 +36,7 @@ Point JohnsonCalculator::getLightvector(){
 //M=( N1x, N1y, 1 )
 //  ( ........... )
 void JohnsonCalculator::createM(){
-    M =  Mat::zeros(4,2 , CV_32F);
+    M =  Mat::zeros(4,3 , CV_32F);
     for(int i = 0; i< 4; i++){
         M.at<float>(i,0) = normals.at(i).x ;
         M.at<float>(i,1) = normals.at(i).y ;
@@ -80,7 +80,9 @@ void JohnsonCalculator::setNormalVecs(const int distance, vector<Point> gss )
         Point endPos = gss.at(i+distance);
         float dx = endPos.x - startPos.x;
         float dy = endPos.y - startPos.y;
-
+//        float l = sqrt(dx*dx+dy*dy);
+//        dx/=l;
+//        dy/=l;
         //Point normalOne = Point(dy,-dx);
         Point2f normalAsPoint = Point(-dy,dx);
 
@@ -88,7 +90,6 @@ void JohnsonCalculator::setNormalVecs(const int distance, vector<Point> gss )
     }
     //printf("\n Anzahl Normalen: %i" , normals.size());
     createM();
-
 }
 
 vector<Point2f> JohnsonCalculator::getNormals() const

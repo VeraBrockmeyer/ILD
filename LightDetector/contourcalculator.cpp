@@ -13,13 +13,15 @@ ContourCalculator::~ContourCalculator(){
  void ContourCalculator::computeContours(cv::Mat maskImage){
      ContourCalculator::maskImage=maskImage;
      // Dilation to make sure that the Object is bigger than its mask
-     int dilation_size = 1;
      Mat imageAfterMorph;
-     Mat element = getStructuringElement(MORPH_RECT, Size(2*dilation_size+ 1 , 2*dilation_size+ 1), Point(dilation_size, dilation_size));
-     dilate(maskImage, imageAfterMorph, element );
+     int erosion_size = 1;
+         cv::Mat element = getStructuringElement(cv::MORPH_ELLIPSE,
+             cv::Size(2 * erosion_size + 1, 2 * erosion_size + 1),
+             cv::Point(erosion_size, erosion_size));
+     morphologyEx(maskImage, imageAfterMorph, cv::MORPH_ERODE, element, cv::Point(-1, -1));
       Mat imageCanny;
      // Canny to detect edges
-     Canny(maskImage, imageCanny, 0, 1200 , 5);
+     Canny(imageAfterMorph, imageCanny, 0, 1200 , 5);
      // Find associated Contours and draw them (in our case it) into the Mat imageWithContours
      findContours(imageCanny, MainContour, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0,0));
      printf("\n Anzahl Konturen: %i " , MainContour.size());
@@ -62,12 +64,17 @@ void ContourCalculator:: sortSubContour(){
         }
     }
 
+
     for (int i = mostLeftPos; i >= 0; i--) {
      SortedSubContour.push_back(SubContour[i]);
     }
+        if(mostRightPos != 0 && mostRightPos != SubContour.size()-1){
     for (int i = SubContour.size()-1; i >= mostRightPos; i--) {
          SortedSubContour.push_back(SubContour[i]);
      }
+    }
+
+
 
    SubContour = SortedSubContour;
 }
@@ -163,7 +170,7 @@ void ContourCalculator::savePartOfContour(QRect CroppedRect){
     //printf("\n Laenge der Subkontur nach Selektierung: %i (Soll Anzahl aller Konturenpunkte innerhalb der Auswahl zaehlen)" , SubContour.size());
     if(SubContour.size()>=3){
        sortSubContour();
-      // imshow("Debug", imageDebug);
+      imshow("Debug", imageDebug);
        computePixelCoordsAlongContour();
        printf("\n Laenge der SampledSubKontur insgesamt: %i " , SampledSubContour.size());
 

@@ -108,6 +108,7 @@ void MainWindow::on_btm_restart_clicked()
     ui->btm_intensity->hide();
     ui->btm_ShowN->hide();
     cc->clearContours();
+    jc->clearNormals();
 }
 
 
@@ -145,7 +146,7 @@ void MainWindow::on_btm_Run_clicked(){
 
     imageCVwithContour = imageCV.clone();
     for (int i=0; i<cc->getMainContour().size(); i++){
-        drawContours( imageCVwithContour, cc->getMainContour(), i, Scalar (0, 255,0), 2, 8, cc->getHierarchy(), 0, Point() );
+        drawContours( imageCVwithContour, cc->getMainContour(), i, Scalar (0, 255,0), 1, 8, cc->getHierarchy(), 0, Point() );
 
     }
     //imshow("main contour", imageCVwithContour);
@@ -221,7 +222,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *event){
 void MainWindow::paintSubContour(){
     Mat temp = imageCV.clone();
     for (int i = 0; i < cc->getSubContour().size()-1; ++i) {
-        line(temp,cc->getSubContour()[i],cc->getSubContour()[i+1],Scalar (0, 255,0), 2);
+        line(temp,cc->getSubContour()[i],cc->getSubContour()[i+1],Scalar (0, 255,0), 1);
     }
     imageQT= Mat2QImage(temp);
     ui->lbl_image->setPixmap(QPixmap::fromImage(imageQT));
@@ -371,10 +372,15 @@ void MainWindow::drawLV(){
      else if(cLength%2 == 1){
          middleOfContour = (cLength-2)/2;
      }
-     int PosX = cc->getSampledSubContour().at(middleOfContour).x;
-     int PosY = cc->getSampledSubContour().at(middleOfContour).y;
-     int factor=7;
-     LVPainter.drawLine(PosX, PosY,PosX+(LV.x*factor), PosY+(LV.y*factor));
+    Point Pos = cc->getSampledSubContour().at(middleOfContour);
+     int factor=15;
+    LV.x = LV.x*factor;
+     LV.y = LV.y*factor;
+    Point imageLV = Pos+LV;
+
+    LVPainter.drawLine(Pos.x, Pos.y,imageLV.x, imageLV.y);
+
+     //LVPainter.drawLine(PosX, PosY,PosX+(LV.x*factor), PosY+(LV.y*factor));
      ui->lbl_image->setPixmap(QPixmap::fromImage(imageQT));
      LVPainter.end();
   }
