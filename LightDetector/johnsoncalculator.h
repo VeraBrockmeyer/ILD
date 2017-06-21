@@ -21,6 +21,7 @@ public:
    // void drawNormalVecs(int distance);
     void setLightvector(Point L);
     Point getLightvector();
+    void createMUsingPatches();
 
 
 
