@@ -33,10 +33,10 @@ void JohnsonCalculator::calculateLightVector(){
     void JohnsonCalculator::createM(){
         M =  Mat::zeros(normals.size(),3 , CV_8U);
         for(int i = 0; i< normals.size(); i++){
-        M.at<int>(i,0) = normals.at(i).x ;
-        M.at<int>(i,1) = normals.at(i).y ;
+        M.at<int>(i,0) = normals.at(i).x;
+        M.at<int>(i,1) = normals.at(i).y;
         M.at<int>(i,2) = 1 ;
-        //printf("\n Zeile %i von M: %i, %i, %i", i, M.at<int>(i,0), M.at<int>(i,1),  M.at<int>(i,2) );
+       // printf("\n Zeile %i von M: %i, %i, %i", i, M.at<int>(i,0), M.at<int>(i,1),  M.at<int>(i,2) );
         }
 
        //imshow("Matrix M", M);
@@ -56,6 +56,20 @@ void JohnsonCalculator::calculateLightVector(){
     }
     }
 
+    void JohnsonCalculator::calculateIntensityNew(const int distance, vector<Point> gss){
+        Point intensityXY;
+        for (int i =0; i< normals.size(); i++){
+            int intX = gss.at(i*distance).x - i * normals.at(i).x;
+            int intY= gss.at(i*distance).y - i * normals.at(i).y ;
+
+            intensityXY.x = intX;
+            intensityXY.y = intY;
+
+            printf("\n Intensität an den Koordinaten (%i,%i) betraegt: x=%i und y=%i", gss.at(i*distance).x, gss.at(i*distance).y , intensityXY.x , intensityXY.y);
+            intensity.push_back(intensityXY);
+        }
+    }
+
     void JohnsonCalculator::clearNormals(){
      normals.clear();
     }
@@ -70,6 +84,13 @@ void JohnsonCalculator::calculateLightVector(){
 
             //Point normalOne = Point(dy,-dx);
             Point normalAsPoint = Point(-dy,dx);
+
+           // printf("\n \n Before Normalisation x=%i und y=%i" , normalAsPoint.x, normalAsPoint.y);
+
+ //           normalAsPoint.x = normalAsPoint.x / (normalAsPoint.x + normalAsPoint.y);
+//            normalAsPoint.y /= (normalAsPoint.x + normalAsPoint.y);
+
+           // printf("\n AFTER Normalisation x=%i und y=%i" , normalAsPoint.x, normalAsPoint.y);
 
             normals.push_back(normalAsPoint);
        }

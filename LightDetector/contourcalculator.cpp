@@ -173,3 +173,5 @@ void ContourCalculator::savePartOfContour(QRect CroppedRect){
 
 }
 
+
+

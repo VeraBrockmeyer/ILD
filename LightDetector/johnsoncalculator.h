@@ -13,18 +13,18 @@ public:
     ~JohnsonCalculator();
     void createM();
     void calculateIntensity(int R, vector<Point> N, vector<Point> L, int A);
-    //void setNormals(const vector<Point>  &value);
     vector<Point> getNormals() const;
     void clearNormals();
     void setNormalVecs(const int distance, vector<Point> gss );
     void calculateLightVector();
-   // void drawNormalVecs(int distance);
+    void calculateIntensityNew(const int distance, vector<Point> gss);
 
 
 
 private:
     Mat M;
     vector<Point> normals;
+    vector<Point> intensity;
 
 };
 
