@@ -27,12 +27,14 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     contourcalculator.cpp \
     lightcalculator.cpp \
-    johnsoncalculator.cpp
+    johnsoncalculator.cpp \
+    johnsoncalculator_kopie.cpp
 
 HEADERS  += mainwindow.h \
     contourcalculator.h \
     lightcalculator.h \
-    johnsoncalculator.h
+    johnsoncalculator.h \
+    johnsoncalculator_kopie.h
 
 FORMS    += mainwindow.ui
 
