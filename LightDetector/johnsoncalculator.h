@@ -12,7 +12,7 @@ public:
     JohnsonCalculator();
     ~JohnsonCalculator();
     void createM();
-    void calculateIntensity(int R, vector<Point> N, vector<Point> L, int A);
+    void calculateIntensity(const int distance, vector<Point> gss, Mat img);
     //void setNormals(const vector<Point>  &value);
     vector<Point> getNormals() const;
     void clearNormals();
@@ -23,7 +23,7 @@ public:
 
 
 private:
-    Mat M;
+    Mat M,I;
     vector<Point> normals;
 
 };
