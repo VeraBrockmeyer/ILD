@@ -9,6 +9,7 @@ using namespace std;
 class JohnsonCalculator
 {
 public:
+    int patchSize =4; //muss durch zwei teilbar sein
     JohnsonCalculator();
     ~JohnsonCalculator();
     void createM();
@@ -21,10 +22,13 @@ public:
    // void drawNormalVecs(int distance);
     void setLightvector(Point L);
     Point getLightvector();
+    void setLightvectorsUsingPatches(vector<float> L);
+    vector<float> getLightvectorsUsingPatches();
     void createMUsingPatches();
     void createC();
     int getNrOfPatches();
     void calculateIntensityUsingPatches(const int distance, vector<Point> gss, Mat img);
+    void calculateLightVectorUsingPatches();
 
 
 
@@ -32,7 +36,8 @@ private:
     Mat M,I, Mp, C, Ip;
     vector<Point2f> normals;
     Point lightvector;
-    const int patchSize =4;
+    vector<float> lightvectorsUsingPatches;
+
     int normalsUsed;
 
 };

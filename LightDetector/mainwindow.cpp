@@ -10,6 +10,9 @@
 using namespace cv;
 using namespace std;
 
+int distanceOfNormals=10;
+bool usePatches = true; //false = alt und true = neu
+
 QImage imageQT;
 Mat maskImage, imageCV, imageCVwithContour;
 //vector<Point> normals;
@@ -17,7 +20,7 @@ QRect CroppedRect;
 QPen redPen, redPenThick, whitePen, bluePen;
 int posImageLableX = 0;
 int posImageLableY = 0;
-int distanceOfNormals=10;
+
 
 bool isSelect;
 bool isDrawing;
@@ -114,10 +117,20 @@ void MainWindow::on_btm_restart_clicked()
 
 void MainWindow::on_btm_ShowLV_clicked()
 {
-    //jc->calculateIntensity(distanceOfNormals, cc->getSampledSubContour(), imageCV);
-    jc->calculateIntensityUsingPatches(distanceOfNormals, cc->getSampledSubContour(), imageCV);
-    jc->calculateLightVector();
-    drawLV();
+    if(!usePatches){
+         jc->calculateIntensity(distanceOfNormals, cc->getSampledSubContour(), imageCV);
+         jc->calculateLightVector();
+         drawLV();
+    }
+    else if(usePatches){
+       jc->calculateIntensityUsingPatches(distanceOfNormals, cc->getSampledSubContour(), imageCV);
+       jc->calculateLightVectorUsingPatches();
+       drawLVUsingPatches();
+    }
+
+
+
+
     ui->btm_ShowLV->hide();
 }
 
@@ -382,6 +395,25 @@ void MainWindow::drawLV(){
     LVPainter.drawLine(Pos.x, Pos.y,imageLV.x, imageLV.y);
 
      //LVPainter.drawLine(PosX, PosY,PosX+(LV.x*factor), PosY+(LV.y*factor));
+     ui->lbl_image->setPixmap(QPixmap::fromImage(imageQT));
+     LVPainter.end();
+  }
+
+
+void MainWindow::drawLVUsingPatches(){
+     QPainter LVPainter(&imageQT);
+     LVPainter.setPen(whitePen);
+     vector<float> LVs = jc->getLightvectorsUsingPatches();
+     int startX, startY,endX, endY, c=0;
+
+     for (int i=0; i<LVs.size()-1 ; i+=2){
+         startX = cc->getSampledSubContour().at(c*jc->patchSize*distanceOfNormals+jc->patchSize*distanceOfNormals/2).x;
+         startY = cc->getSampledSubContour().at(c*jc->patchSize*distanceOfNormals+jc->patchSize*distanceOfNormals/2).y;
+         endX = startX + LVs.at(i);
+         endY = startY + LVs.at(i+1);
+         c++;
+         LVPainter.drawLine(startX, startY,endX, endY);
+     }
      ui->lbl_image->setPixmap(QPixmap::fromImage(imageQT));
      LVPainter.end();
   }
