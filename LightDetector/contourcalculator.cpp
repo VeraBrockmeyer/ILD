@@ -24,7 +24,7 @@ ContourCalculator::~ContourCalculator(){
      Canny(imageAfterMorph, imageCanny, 0, 1200 , 5);
      // Find associated Contours and draw them (in our case it) into the Mat imageWithContours
      findContours(imageCanny, MainContour, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0,0));
-     printf("\n Anzahl Konturen: %i " , MainContour.size());
+    // printf("\n Anzahl Konturen: %i " , MainContour.size());
 
  }
 
@@ -172,7 +172,7 @@ void ContourCalculator::savePartOfContour(QRect CroppedRect){
        sortSubContour();
       imshow("Debug", imageDebug);
        computePixelCoordsAlongContour();
-       printf("\n Laenge der SampledSubKontur insgesamt: %i " , SampledSubContour.size());
+       //printf("\n Laenge der SampledSubKontur insgesamt: %i " , SampledSubContour.size());
 
       }
 

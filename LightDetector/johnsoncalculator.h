@@ -24,11 +24,12 @@ public:
     void createMUsingPatches();
     void createC();
     int getNrOfPatches();
+    void calculateIntensityUsingPatches(const int distance, vector<Point> gss, Mat img);
 
 
 
 private:
-    Mat M,I, Mp, C;
+    Mat M,I, Mp, C, Ip;
     vector<Point2f> normals;
     Point lightvector;
     const int patchSize =4;

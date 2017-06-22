@@ -17,7 +17,7 @@ QRect CroppedRect;
 QPen redPen, redPenThick, whitePen, bluePen;
 int posImageLableX = 0;
 int posImageLableY = 0;
-int distanceOfNormals=2;
+int distanceOfNormals=10;
 
 bool isSelect;
 bool isDrawing;
@@ -105,7 +105,7 @@ void MainWindow::on_btm_restart_clicked()
     ui->btm_deleteSelection->hide();
     ui->btm_saveSelection->hide();
     ui->lbl_ListContours->hide();
-    ui->btm_intensity->hide();
+    //ui->btm_intensity->hide();
     ui->btm_ShowN->hide();
     cc->clearContours();
     jc->clearNormals();
@@ -114,7 +114,8 @@ void MainWindow::on_btm_restart_clicked()
 
 void MainWindow::on_btm_ShowLV_clicked()
 {
-    jc->calculateIntensity(distanceOfNormals, cc->getSampledSubContour(), imageCV);
+    //jc->calculateIntensity(distanceOfNormals, cc->getSampledSubContour(), imageCV);
+    jc->calculateIntensityUsingPatches(distanceOfNormals, cc->getSampledSubContour(), imageCV);
     jc->calculateLightVector();
     drawLV();
     ui->btm_ShowLV->hide();
@@ -124,7 +125,8 @@ void MainWindow::on_btm_ShowN_clicked()
 {
     jc->setNormalVecs(distanceOfNormals, cc->getSampledSubContour());
     drawNormalVecs(distanceOfNormals);
-    ui->btm_intensity->show();
+    //ui->btm_intensity->show();
+     ui->btm_ShowLV->show();
     ui->btm_ShowN->hide();
 }
 
@@ -193,7 +195,7 @@ void MainWindow::mousePressEvent(QMouseEvent *event){
         CroppedRect.setTopLeft(QPoint(event->pos().x()-posImageLableX, event->pos().y()-posImageLableY));
         paintStartPoint();
         markNrOfContour();
-        printf("\n Cropped Rect top left x=%i und y=%i", CroppedRect.topLeft().x(), CroppedRect.topLeft().y());
+        //printf("\n Cropped Rect top left x=%i und y=%i", CroppedRect.topLeft().x(), CroppedRect.topLeft().y());
     }
 }
 
@@ -269,7 +271,6 @@ void MainWindow::markNrOfContour(){
 void MainWindow::on_btm_saveSelection_clicked(){
     ui->btm_saveSelection->hide();
     ui->btm_deleteSelection->hide();
-    ui->btm_ShowLV->show();
     ui->btm_ShowN->show();
     //cropContour(CroppedRect);
     cc->savePartOfContour(CroppedRect);
