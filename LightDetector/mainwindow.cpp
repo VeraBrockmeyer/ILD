@@ -25,6 +25,7 @@ int posImageLableY = 0;
 bool isSelect;
 bool isDrawing;
 bool isCon1Active;
+bool runRectMode = false;
 
 ContourCalculator* cc;
 JohnsonCalculator* jc;
@@ -170,6 +171,7 @@ void MainWindow::on_btm_Run_clicked(){
     ui->lbl_image->setPixmap(QPixmap::fromImage(imageQT));
     ui->btm_selection->show();
     ui->btm_Run->hide();
+    runRectMode = true;
 }
 
 Mat MainWindow::QImage2Mat(QImage const& src){
@@ -224,6 +226,7 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event){
 }
 
 void MainWindow::mouseReleaseEvent(QMouseEvent *event){
+    if(runRectMode){
     paintRect();
     if(isDrawing){
         //When mouse is released update for the one last time
@@ -231,6 +234,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *event){
         isDrawing = false;
         ui->btm_saveSelection->show();
         ui->btm_deleteSelection->show();
+    }
     }
 }
 
@@ -302,6 +306,7 @@ void MainWindow::on_btm_saveSelection_clicked(){
 
     }
     isCon1Active = true;
+    runRectMode = false;
 }
 
 void MainWindow::deleteDrawnSelection(){
