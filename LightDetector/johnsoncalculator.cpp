@@ -47,20 +47,24 @@ void JohnsonCalculator::createM(){
     //imshow("Matrix M", M);
 }
 
-
-void JohnsonCalculator::createMUsingPatches(){
-    int patchSize =4;
-    int normalsUsed = normals.size();
+int JohnsonCalculator::getNrOfPatches(){
+    int nr;
+    normalsUsed = normals.size();
     while(normalsUsed%patchSize !=0){
         normalsUsed--;
     }
-    int ncols= (normalsUsed/patchSize)*2+1;
+    nr= normalsUsed/patchSize;
+    printf("\n Laenge Normalen: %i genutzte Normalen:%i PatchNR:%i", normals.size(), normalsUsed, nr);
+    return nr;
+}
+
+
+void JohnsonCalculator::createMUsingPatches(){
+    int ncols= (getNrOfPatches())*2+1;
     int i=0;
     int r = 0;
 
-    printf("\n Laenge Normalen: %i genutzte Normalen:%i ncols:%i", normals.size(), normalsUsed, ncols);
-
-    Mat Mp =  Mat::zeros(normalsUsed, ncols , CV_32F);
+    Mp =  Mat::zeros(normalsUsed, ncols , CV_32F);
 
     for(int c = 0; c< ncols-2; c+=2){
         for(int p =0; p<patchSize; p++){
@@ -74,6 +78,8 @@ void JohnsonCalculator::createMUsingPatches(){
          Mp.at<float>(r,ncols-1) = 1;
     }
       printf("\n");
+      printf("\n Matrix M:");
+      printf("\n");
       for(int r = 0; r< Mp.size().height; r++){
           for(int c = 0; c< Mp.size().width; c++){
           printf(" %f,  ", Mp.at<float>(r,c) );
@@ -81,8 +87,31 @@ void JohnsonCalculator::createMUsingPatches(){
           printf(" \n \n" );
       }
 
-    imshow("Matrix Mp", Mp);
+    //imshow("Matrix Mp", Mp);
 }
+
+ void JohnsonCalculator::createC(){
+      C =  Mat::zeros(2*getNrOfPatches()-2, 2*getNrOfPatches()+1,  CV_32F);
+
+      int r=0;
+      for(int c = 0; c< C.size().width-3; c+=4){
+              C.at<float>(r,c) = -1.0f ;
+              C.at<float>(r,c+2) = 1.0f;
+              C.at<float>(r+1,c+1) = -1.0f ;
+              C.at<float>(r+1,c+3) = 1.0f;
+          r+=2;
+      }
+
+      printf("\n");
+      printf("\n Matrix C:");
+      printf("\n");
+      for(int r = 0; r< C.size().height; r++){
+          for(int c = 0; c< C.size().width; c++){
+          printf(" %f,  ", C.at<float>(r,c) );
+          }
+          printf(" \n \n" );
+      }
+ }
 
 
 void JohnsonCalculator::calculateIntensity(const int distance, vector<Point> gss, Mat img){
@@ -126,6 +155,7 @@ void JohnsonCalculator::setNormalVecs(const int distance, vector<Point> gss )
     //printf("\n Anzahl Normalen: %i" , normals.size());
     createM();
     createMUsingPatches();
+    createC();
 }
 
 vector<Point2f> JohnsonCalculator::getNormals() const

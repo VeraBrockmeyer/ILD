@@ -17,7 +17,7 @@ QRect CroppedRect;
 QPen redPen, redPenThick, whitePen, bluePen;
 int posImageLableX = 0;
 int posImageLableY = 0;
-int distanceOfNormals=10;
+int distanceOfNormals=2;
 
 bool isSelect;
 bool isDrawing;

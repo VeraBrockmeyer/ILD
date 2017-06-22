@@ -22,13 +22,17 @@ public:
     void setLightvector(Point L);
     Point getLightvector();
     void createMUsingPatches();
+    void createC();
+    int getNrOfPatches();
 
 
 
 private:
-    Mat M,I;
+    Mat M,I, Mp, C;
     vector<Point2f> normals;
     Point lightvector;
+    const int patchSize =4;
+    int normalsUsed;
 
 };
 
