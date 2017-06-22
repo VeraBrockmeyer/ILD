@@ -60,6 +60,7 @@ private:
     void calculateIntensity(int R, vector<cv::Point> N, vector<cv::Point> L, int A);
     void drawLV();
     void drawLVUsingPatches();
+    void saveResults();
 
 
 };

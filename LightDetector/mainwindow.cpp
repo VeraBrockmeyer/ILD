@@ -11,7 +11,7 @@ using namespace cv;
 using namespace std;
 
 int distanceOfNormals=10;
-bool usePatches = true; //false = alt und true = neu
+bool usePatches = false; //false = alt und true = neu
 
 QImage imageQT;
 Mat maskImage, imageCV, imageCVwithContour;
@@ -48,7 +48,7 @@ MainWindow::MainWindow(QWidget *parent) :
     redPen.setColor(QColor(255,0,0));
     redPenThick.setWidth(14);
     redPenThick.setColor(QColor(255,0,0));
-    whitePen.setWidth(3);
+    whitePen.setWidth(1);
     whitePen.setColor(QColor(255,255,255));
     bluePen.setWidth(1);
     bluePen.setColor(QColor(0,0,255));
@@ -119,14 +119,14 @@ void MainWindow::on_btm_restart_clicked()
 void MainWindow::on_btm_ShowLV_clicked()
 {
     if(!usePatches){
-         jc->calculateIntensity(distanceOfNormals, cc->getSampledSubContour(), imageCV);
-         jc->calculateLightVector();
-         drawLV();
+        jc->calculateIntensity(distanceOfNormals, cc->getSampledSubContour(), imageCV);
+        jc->calculateLightVector();
+        drawLV();
     }
     else if(usePatches){
-       jc->calculateIntensityUsingPatches(distanceOfNormals, cc->getSampledSubContour(), imageCV);
-       jc->calculateLightVectorUsingPatches();
-       drawLVUsingPatches();
+        jc->calculateIntensityUsingPatches(distanceOfNormals, cc->getSampledSubContour(), imageCV);
+        jc->calculateLightVectorUsingPatches();
+        drawLVUsingPatches();
     }
 
 
@@ -140,7 +140,7 @@ void MainWindow::on_btm_ShowN_clicked()
     jc->setNormalVecs(distanceOfNormals, cc->getSampledSubContour());
     drawNormalVecs(distanceOfNormals);
     //ui->btm_intensity->show();
-     ui->btm_ShowLV->show();
+    ui->btm_ShowLV->show();
     ui->btm_ShowN->hide();
 }
 
@@ -227,14 +227,14 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event){
 
 void MainWindow::mouseReleaseEvent(QMouseEvent *event){
     if(runRectMode){
-    paintRect();
-    if(isDrawing){
-        //When mouse is released update for the one last time
-        isSelect = false;
-        isDrawing = false;
-        ui->btm_saveSelection->show();
-        ui->btm_deleteSelection->show();
-    }
+        paintRect();
+        if(isDrawing){
+            //When mouse is released update for the one last time
+            isSelect = false;
+            isDrawing = false;
+            ui->btm_saveSelection->show();
+            ui->btm_deleteSelection->show();
+        }
     }
 }
 
@@ -380,47 +380,72 @@ void MainWindow::on_btm_intensity_clicked()
 }
 
 void MainWindow::drawLV(){
-     QPainter LVPainter(&imageQT);
-     LVPainter.setPen(whitePen);
-     Point LV = jc->getLightvector();
-     int middleOfContour;
-     int cLength = cc->getSampledSubContour().size(); //length of contour
-     if(cLength%2 == 0){
-         middleOfContour = (cLength-1)/2;
-     }
-     else if(cLength%2 == 1){
-         middleOfContour = (cLength-2)/2;
-     }
+    QPainter LVPainter(&imageQT);
+    LVPainter.setPen(whitePen);
+    Point LV = jc->getLightvector();
+    int middleOfContour;
+    int cLength = cc->getSampledSubContour().size(); //length of contour
+    if(cLength%2 == 0){
+        middleOfContour = (cLength-1)/2;
+    }
+    else if(cLength%2 == 1){
+        middleOfContour = (cLength-2)/2;
+    }
     Point Pos = cc->getSampledSubContour().at(middleOfContour);
-     int factor=15;
+    int factor=5;
     LV.x = LV.x*factor;
-     LV.y = LV.y*factor;
+    LV.y = LV.y*factor;
     Point imageLV = Pos+LV;
 
     LVPainter.drawLine(Pos.x, Pos.y,imageLV.x, imageLV.y);
 
-     //LVPainter.drawLine(PosX, PosY,PosX+(LV.x*factor), PosY+(LV.y*factor));
-     ui->lbl_image->setPixmap(QPixmap::fromImage(imageQT));
-     LVPainter.end();
-  }
+    //LVPainter.drawLine(PosX, PosY,PosX+(LV.x*factor), PosY+(LV.y*factor));
+    ui->lbl_image->setPixmap(QPixmap::fromImage(imageQT));
+    LVPainter.end();
+    saveResults();
+}
 
 
 void MainWindow::drawLVUsingPatches(){
-     QPainter LVPainter(&imageQT);
-     LVPainter.setPen(whitePen);
-     vector<float> LVs = jc->getLightvectorsUsingPatches();
-     int startX, startY,endX, endY, c=0;
+    QPainter LVPainter(&imageQT);
+    LVPainter.setPen(whitePen);
+    vector<float> LVs = jc->getLightvectorsUsingPatches();
+    int startX, startY,endX, endY, c=0;
 
-     for (int i=0; i<LVs.size()-1 ; i+=2){
-         startX = cc->getSampledSubContour().at(c*jc->patchSize*distanceOfNormals+jc->patchSize*distanceOfNormals/2).x;
-         startY = cc->getSampledSubContour().at(c*jc->patchSize*distanceOfNormals+jc->patchSize*distanceOfNormals/2).y;
-         endX = startX + LVs.at(i);
-         endY = startY + LVs.at(i+1);
-         c++;
-         LVPainter.drawLine(startX, startY,endX, endY);
-     }
-     ui->lbl_image->setPixmap(QPixmap::fromImage(imageQT));
-     LVPainter.end();
-  }
+    for (int i=0; i<LVs.size()-1 ; i+=2){
+        startX = cc->getSampledSubContour().at(c*jc->patchSize*distanceOfNormals+jc->patchSize*distanceOfNormals/2).x;
+        startY = cc->getSampledSubContour().at(c*jc->patchSize*distanceOfNormals+jc->patchSize*distanceOfNormals/2).y;
+        endX = startX + LVs.at(i);
+        endY = startY + LVs.at(i+1);
+        c++;
+        LVPainter.drawLine(startX, startY,endX, endY);
+    }
+    ui->lbl_image->setPixmap(QPixmap::fromImage(imageQT));
+    LVPainter.end();
+    saveResults();
+}
+
+void MainWindow::saveResults(){
+    QString str = "Result_.jpg";
+    imageQT.save(str,"JPEG");
+    cv::FileStorage fs("ResultMats_.yml", cv::FileStorage::WRITE);
+    if (fs.isOpened()){
+
+        if(!usePatches){
+            fs << "M" << jc->getM();
+            fs<< "I" << jc->getI();
+            fs << "LV" << jc->getLightvector();
+        }
+        else{
+            fs << "Mp" << jc->getMp();
+            fs << "Ip" << jc->getIp();
+            for (int i = 0; i < jc->getLightvectorsUsingPatches().size()-1; i+=2) {
+            Point2f p = Point2f(jc->getLightvectorsUsingPatches()[i],jc->getLightvectorsUsingPatches()[i]);
+            cv::String s = "LV" + i;
+            fs << s << p;
+            }
+        }
+    }
+}
 
 

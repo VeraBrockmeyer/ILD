@@ -32,6 +32,14 @@ public:
 
 
 
+    Mat getM() const;
+
+    Mat getI() const;
+
+    Mat getMp() const;
+
+    Mat getIp() const;
+
 private:
     Mat M,I, Mp, C, Ip;
     vector<Point2f> normals;

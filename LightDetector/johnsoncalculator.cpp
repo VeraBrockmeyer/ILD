@@ -39,6 +39,26 @@ void JohnsonCalculator::calculateLightVectorUsingPatches(){
      setLightvectorsUsingPatches(L);
 }
 
+Mat JohnsonCalculator::getM() const
+{
+    return M;
+}
+
+Mat JohnsonCalculator::getI() const
+{
+    return I;
+}
+
+Mat JohnsonCalculator::getMp() const
+{
+    return Mp;
+}
+
+Mat JohnsonCalculator::getIp() const
+{
+    return Ip;
+}
+
 void JohnsonCalculator::setLightvector(Point L){
     lightvector = L;
 }
