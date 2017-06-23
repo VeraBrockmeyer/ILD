@@ -11,7 +11,7 @@ using namespace cv;
 using namespace std;
 
 int distanceOfNormals=10;
-bool usePatches = false; //false = alt und true = neu
+bool usePatches = true; //false = alt und true = neu
 
 QImage imageQT;
 Mat maskImage, imageCV, imageCVwithContour;
@@ -439,10 +439,10 @@ void MainWindow::saveResults(){
         else{
             fs << "Mp" << jc->getMp();
             fs << "Ip" << jc->getIp();
+            fs << "LV" << 0;
             for (int i = 0; i < jc->getLightvectorsUsingPatches().size()-1; i+=2) {
-            Point2f p = Point2f(jc->getLightvectorsUsingPatches()[i],jc->getLightvectorsUsingPatches()[i]);
-            cv::String s = "LV" + i;
-            fs << s << p;
+            Point2f p = Point2f(jc->getLightvectorsUsingPatches()[i],jc->getLightvectorsUsingPatches()[i+1]);
+            fs << "p" << p;
             }
         }
     }

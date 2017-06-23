@@ -170,7 +170,7 @@ void JohnsonCalculator::calculateIntensityUsingPatches(const int distance, vecto
         uchar red = intensity.val[2];
         float val = 0.299*red + 0.587*green + 0.114*blue;
         Ip.at<float>(i, 0) = val;
-        if(counter==normalsUsed)break;
+        if(counter==normalsUsed-1)break;
     }
 }
 
@@ -209,12 +209,10 @@ void JohnsonCalculator::createC(){
     C =  Mat::zeros(2*getNrOfPatches()-2, 2*getNrOfPatches()+1,  CV_32F);
 
     int r=0;
-    for(int c = 0; c< C.size().width-3; c+=4){
+    for(int c = 0; c< C.size().width-1; c++){
         C.at<float>(r,c) = -1.0f ;
-        C.at<float>(r,c+2) = 1.0f;
-        C.at<float>(r+1,c+1) = -1.0f ;
-        C.at<float>(r+1,c+3) = 1.0f;
-        r+=2;
+        C.at<float>(r,c+2) = 1.0f ;
+         r++;
     }
 
           printf("\n");
@@ -227,3 +225,6 @@ void JohnsonCalculator::createC(){
               printf(" \n \n" );
           }
 }
+
+
+
