@@ -29,30 +29,30 @@ void JohnsonCalculator::calculateLightVectorUsingPatches(){
     Mat MpT = Mp.t();
     Mat CT = C.t();
     Mat bracket = (MpT*Mp)  + (0.5f*CT*C);
-    //Mat bracketInvert = bracket.inv();
+    Mat bracketInvert = bracket.inv(DECOMP_SVD);
     Mat bvec = MpT*Ip;
-    Mat v = bracket *bvec;
+    //Mat v = bracket *bvec;
+    Mat v = bracketInvert *bvec;
 
+//    printf("\n");
+//    printf("\n Matrix TRANSPONIERT:");
+//    printf("\n");
+//    for(int r = 0; r< MpT.size().height; r++){
+//        for(int c = 0; c< MpT.size().width; c++){
+//        printf(" %f,  ", MpT.at<float>(r,c) );
+//        }
+//        printf(" \n" );
+//    }
 
-    printf("\n");
-    printf("\n Matrix TRANSPONIERT:");
-    printf("\n");
-    for(int r = 0; r< MpT.size().height; r++){
-        for(int c = 0; c< MpT.size().width; c++){
-        printf(" %f,  ", MpT.at<float>(r,c) );
-        }
-        printf(" \n" );
-    }
-
-    printf("\n");
-    printf("\n Matrix Bracket:");
-    printf("\n");
-    for(int r = 0; r< bracket.size().height; r++){
-        for(int c = 0; c< bracket.size().width; c++){
-        printf(" %f,  ", bracket.at<float>(r,c) );
-        }
-        printf(" \n" );
-    }
+//    printf("\n");
+//    printf("\n Matrix Bracket:");
+//    printf("\n");
+//    for(int r = 0; r< bracket.size().height; r++){
+//        for(int c = 0; c< bracket.size().width; c++){
+//        printf(" %f,  ", bracket.at<float>(r,c) );
+//        }
+//        printf(" \n" );
+//    }
 
 //    printf("\n");
 //    printf("\n Matrix Bracket INVERSE:");
@@ -65,15 +65,15 @@ void JohnsonCalculator::calculateLightVectorUsingPatches(){
 //    }
 
 
-    printf("\n");
-    printf("\n B:");
-    printf("\n");
-    for(int r = 0; r< bvec.size().height; r++){
-        //for(int c = 0; c< bvec.size().width; c++){
-        printf(" %f,  ", bvec.at<float>(r,0));
-       // }
-        printf(" \n" );
-    }
+//    printf("\n");
+//    printf("\n B:");
+//    printf("\n");
+//    for(int r = 0; r< bvec.size().height; r++){
+//        //for(int c = 0; c< bvec.size().width; c++){
+//        printf(" %f,  ", bvec.at<float>(r,0));
+//       // }
+//        printf(" \n" );
+//    }
 
 
 
@@ -227,16 +227,21 @@ void JohnsonCalculator::calculateIntensityUsingPatches(const int distance, vecto
     int  counter=0;
     printf("\n \n Intensitaet:");
     for(int i = 0; i < gss.size()-distance; i+=distance){
-        counter ++;
+
         Point p = gss.at(i);
         Vec3b intensity = img.at<Vec3b>(p.y, p.x);
         uchar blue = intensity.val[0];
         uchar green = intensity.val[1];
         uchar red = intensity.val[2];
         float val = 0.299*red + 0.587*green + 0.114*blue;
-        Ip.at<float>(i, 0) = val;
-        printf("\n %f",  Ip.at<float>(i, 0));
+        Ip.at<float>(counter, 0) = val;
+        printf("\n %f",  Ip.at<float>(counter, 0));
+        counter ++;
         if(counter==normalsUsed)break;  // if(counter==normalsUsed-1)break;
+    }
+    printf("nach berechnung \n");
+    for (int i = 0; i <Ip.size().height; ++i) {
+          printf("\n %f",  Ip.at<float>(i, 0));
     }
 }
 

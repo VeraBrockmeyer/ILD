@@ -61,6 +61,7 @@ private:
     void drawLV();
     void drawLVUsingPatches();
     void saveResults();
+    void drawFinalLightvector();
 
 
 };

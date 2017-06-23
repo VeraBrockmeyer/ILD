@@ -50,7 +50,7 @@ MainWindow::MainWindow(QWidget *parent) :
     redPenThick.setColor(QColor(255,0,0));
     whitePen.setWidth(1);
     whitePen.setColor(QColor(255,255,255));
-    bluePen.setWidth(1);
+    bluePen.setWidth(2);
     bluePen.setColor(QColor(0,0,255));
     cc = new ContourCalculator();
     jc = new JohnsonCalculator();
@@ -127,6 +127,7 @@ void MainWindow::on_btm_ShowLV_clicked()
         jc->calculateIntensityUsingPatches(distanceOfNormals, cc->getSampledSubContour(), imageCV);
         jc->calculateLightVectorUsingPatches();
         drawLVUsingPatches();
+        drawFinalLightvector();
     }
 
 
@@ -420,6 +421,38 @@ void MainWindow::drawLVUsingPatches(){
         c++;
         LVPainter.drawLine(startX, startY,endX, endY);
     }
+    ui->lbl_image->setPixmap(QPixmap::fromImage(imageQT));
+    LVPainter.end();
+    saveResults();
+}
+
+
+void MainWindow::drawFinalLightvector(){
+    QPainter LVPainter(&imageQT);
+    LVPainter.setPen(bluePen);
+    vector<float> LVs = jc->getLightvectorsUsingPatches();
+    float x,y;
+    for (int i= 0; i<LVs.size()-2; i+=2){
+        x+=LVs.at(i);
+        y+=LVs.at(i+1);
+    }
+    printf("GEMITTELTER LICHTVEKTOR: %f , %f" , x,y);
+//    x/=(LVs.size()/2);
+//    y/=(LVs.size()/2);
+//    x*=2;
+//    y*=2;
+    int middleOfContour;
+    int cLength = cc->getSampledSubContour().size(); //length of contour
+    if(cLength%2 == 0){
+        middleOfContour = (cLength-1)/2;
+    }
+    else if(cLength%2 == 1){
+        middleOfContour = (cLength-2)/2;
+    }
+    Point Pos = cc->getSampledSubContour().at(middleOfContour);
+
+        LVPainter.drawLine(Pos.x, Pos.y,Pos.x+x, Pos.y+y);
+
     ui->lbl_image->setPixmap(QPixmap::fromImage(imageQT));
     LVPainter.end();
     saveResults();
