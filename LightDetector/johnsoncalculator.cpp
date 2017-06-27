@@ -261,8 +261,8 @@ void JohnsonCalculator::setNormalVecs(const int distance, vector<Point> gss, Mat
         dy*=50.;
         Point2f normalOne = Point2f(dy,-dx);
         Point2f normalAsPoint = Point2f(-dy,dx);
-        int endXOne = gss.at(i+distance/2).x - normalOne.x;
-        int endYOne = gss.at(i+distance/2).y - normalOne.y;
+        float endXOne = gss.at(i+distance/2).x - normalOne.x;
+        float endYOne = gss.at(i+distance/2).y - normalOne.y;
         Vec3b intensity = maskImage.at<Vec3b>(endYOne,endXOne);
         uchar blue = intensity.val[0];
         uchar green = intensity.val[1];
