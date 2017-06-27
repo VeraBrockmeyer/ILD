@@ -16,7 +16,7 @@ public:
     void calculateIntensity(const int distance, vector<Point> gss, Mat img);
     //void setNormals(const vector<Point>  &value);
     vector<Point2f> getNormals() const;
-    void clearNormals();
+    void clearAll();
     void setNormalVecs(const int distance, vector<Point> gss );
     void calculateLightVector();
    // void drawNormalVecs(int distance);

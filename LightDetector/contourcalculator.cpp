@@ -38,12 +38,18 @@ void ContourCalculator::setImageCV(const cv::Mat &value)
     imageCV = value;
 }
 
-
+void ContourCalculator::clearCurrentSelction(){
+    SubContour.clear();
+    SampledSubContour.clear();
+    hierarchy.clear();
+    hasHighestPoint = false;
+}
 void ContourCalculator::clearContours(){
     SubContour.clear();
     MainContour.clear();
     SampledSubContour.clear();
     hierarchy.clear();
+    hasHighestPoint = false;
 }
 void ContourCalculator:: sortSubContour(){
     // apply it to the contours:

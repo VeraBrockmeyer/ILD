@@ -68,15 +68,24 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_btm_image_clicked()
 {
+    printf(" start read image \n");
     QString filename = QFileDialog::getOpenFileName(this, tr("Choose the Image you want to analyse"), "Testbilder/mitMasken", tr("Images (*.jpg *.tif)"));
+   printf(" toStdString \n");
+   if( filename.isNull() )
+      {
+         printf(" no filename \n");
+      }
     std::string str = filename.toStdString();
+    printf(" imread \n");
     imageCV = imread(str.c_str(), CV_LOAD_IMAGE_COLOR);
+     printf(" finish read image \n");
+     printf(" start read mask image \n");
     std::string filenameCV = str.substr(0,str.size()-4);
     filenameCV+="_mask.jpg";
+     Mat maskImageLoaded = imread(filenameCV.c_str(), CV_8UC3);
+     printf(" finish mask image \n");
 
-    Mat maskImageLoaded = imread(filenameCV.c_str(), CV_8UC3);
-
-    if (QString::compare(filename, QString()) !=0){
+       if (QString::compare(filename, QString()) !=0){
         bool valid = imageQT.load(filename);
         if (valid){
             imageQT=imageQT.scaled(ui->lbl_image->width(),ui->lbl_image->height(),Qt::KeepAspectRatio,Qt::SmoothTransformation);
@@ -109,10 +118,12 @@ void MainWindow::on_btm_restart_clicked()
     ui->btm_deleteSelection->hide();
     ui->btm_saveSelection->hide();
     ui->lbl_ListContours->hide();
-    //ui->btm_intensity->hide();
     ui->btm_ShowN->hide();
+    printf("start clear cont \n");
     cc->clearContours();
-    jc->clearNormals();
+     printf("start clear all \n");
+    jc->clearAll();
+    printf("finished \n");
 }
 
 
@@ -246,7 +257,7 @@ void MainWindow::paintSubContour(){
 
     for (int i = 0; i < cc->getSubContour().size()-1; ++i) {
      //   color++;
-        line(temp,cc->getSubContour()[i],cc->getSubContour()[i+1],Scalar (255, 0,0), 1);
+        line(temp,cc->getSubContour()[i],cc->getSubContour()[i+1],Scalar (0, 255,0), 1);
 
 //        if(color < 255){
 //        line(temp,cc->getSubContour()[i],cc->getSubContour()[i+1],Scalar (color, 0,0), 3);
@@ -343,21 +354,21 @@ void MainWindow::on_btm_saveSelection_clicked(){
 
 void MainWindow::deleteDrawnSelection(){
     //optische Löschung der Kontur
-
-
+    printf("start delete Select \n");
     ui->lbl_image->clear();
+    printf("set image \n");
     imageQT = Mat2QImage(imageCV.clone());
     ui->lbl_image->setPixmap(QPixmap::fromImage(imageQT));
-
-
     //Löschen des Konturenvektors:
     //Löschen der Normalen und des Subkonturen falls wir Button auch verwenden wollen um nachträglich Konturen zu löschen :)
-    cc->clearContours();
-    jc->clearNormals();
+    printf("clear Contours \n");
+    cc->clearCurrentSelction();
+    jc->clearAll();
+    printf("clear All \n");
+
     //    printf("\n \n Anzahl Main-Normale nach Loeschung: %i", cc->getMainContour().size());
     //    printf("\n Anzahl Sub-Normalen nach Loeschung: %i", normals.size());
     //    printf("\n Anzahl Subkonturen nach Loeschung: %i", cc->getSubContour().size());
-
 }
 
 void MainWindow::on_btm_deleteSelection_clicked()
@@ -463,15 +474,18 @@ void MainWindow::drawFinalLightvector(){
     LVPainter.setPen(bluePen);
     vector<float> LVs = jc->getLightvectorsUsingPatches();
     float x,y;
+    float counter =0;
     for (int i= 0; i<LVs.size()-2; i+=2){
         x+=LVs.at(i);
         y+=LVs.at(i+1);
+        counter++;
     }
     printf("GEMITTELTER LICHTVEKTOR: %f , %f" , x,y);
-//    x/=(LVs.size()/2);
-//    y/=(LVs.size()/2);
-//    x*=2;
-//    y*=2;
+    x/=counter;
+    y/=counter;
+    float factor=30;
+    x*=factor;
+    y*=factor;
     int middleOfContour;
     int cLength = cc->getSampledSubContour().size(); //length of contour
     if(cLength%2 == 0){
@@ -482,7 +496,7 @@ void MainWindow::drawFinalLightvector(){
     }
     Point Pos = cc->getSampledSubContour().at(middleOfContour);
 
-        LVPainter.drawLine(Pos.x, Pos.y,Pos.x+x, Pos.y+y);
+    LVPainter.drawLine(Pos.x, Pos.y,Pos.x+x, Pos.y+y);
 
     ui->lbl_image->setPixmap(QPixmap::fromImage(imageQT));
     LVPainter.end();

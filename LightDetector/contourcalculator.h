@@ -22,6 +22,7 @@ public:
     std::vector<cv::Point> getSampledSubContour() const;
     void setSampledSubContour(const std::vector<cv::Point> &value);
     void clearContours();
+    void clearCurrentSelction();
     void computeContours(cv::Mat maskImage);
     std::vector<cv::Vec4i> getHierarchy() const;
 

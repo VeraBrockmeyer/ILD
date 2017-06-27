@@ -17,12 +17,12 @@ void JohnsonCalculator::calculateLightVector(){
     int Lx =  v.at<float>(0,0);
     int Ly =  v.at<float>(1,0);
     L = Point(Lx,Ly);
-     setLightvector(L);
-     printf("\n \n Lightvector \n");
-     for(int i = 0; i<v.size().height-2; i+=2){
-         printf("%f " , v.at<float>(i,0));
-         printf("%f \n " , v.at<float>(i+1,0));
-     }
+    setLightvector(L);
+    printf("\n \n Lightvector \n");
+    for(int i = 0; i<v.size().height-2; i+=2){
+        printf("%f " , v.at<float>(i,0));
+        printf("%f \n " , v.at<float>(i+1,0));
+    }
 }
 
 void JohnsonCalculator::calculateLightVectorUsingPatches(){
@@ -34,59 +34,59 @@ void JohnsonCalculator::calculateLightVectorUsingPatches(){
     //Mat v = bracket *bvec;
     Mat v = bracketInvert *bvec;
 
-//    printf("\n");
-//    printf("\n Matrix TRANSPONIERT:");
-//    printf("\n");
-//    for(int r = 0; r< MpT.size().height; r++){
-//        for(int c = 0; c< MpT.size().width; c++){
-//        printf(" %f,  ", MpT.at<float>(r,c) );
-//        }
-//        printf(" \n" );
-//    }
+    //    printf("\n");
+    //    printf("\n Matrix TRANSPONIERT:");
+    //    printf("\n");
+    //    for(int r = 0; r< MpT.size().height; r++){
+    //        for(int c = 0; c< MpT.size().width; c++){
+    //        printf(" %f,  ", MpT.at<float>(r,c) );
+    //        }
+    //        printf(" \n" );
+    //    }
 
-//    printf("\n");
-//    printf("\n Matrix Bracket:");
-//    printf("\n");
-//    for(int r = 0; r< bracket.size().height; r++){
-//        for(int c = 0; c< bracket.size().width; c++){
-//        printf(" %f,  ", bracket.at<float>(r,c) );
-//        }
-//        printf(" \n" );
-//    }
+    //    printf("\n");
+    //    printf("\n Matrix Bracket:");
+    //    printf("\n");
+    //    for(int r = 0; r< bracket.size().height; r++){
+    //        for(int c = 0; c< bracket.size().width; c++){
+    //        printf(" %f,  ", bracket.at<float>(r,c) );
+    //        }
+    //        printf(" \n" );
+    //    }
 
-//    printf("\n");
-//    printf("\n Matrix Bracket INVERSE:");
-//    printf("\n");
-//    for(int r = 0; r< bracketInvert.size().height; r++){
-//        for(int c = 0; c< bracketInvert.size().width; c++){
-//        printf(" %f,  ", bracketInvert.at<float>(r,c) );
-//        }
-//        printf(" \n" );
-//    }
-
-
-//    printf("\n");
-//    printf("\n B:");
-//    printf("\n");
-//    for(int r = 0; r< bvec.size().height; r++){
-//        //for(int c = 0; c< bvec.size().width; c++){
-//        printf(" %f,  ", bvec.at<float>(r,0));
-//       // }
-//        printf(" \n" );
-//    }
+    //    printf("\n");
+    //    printf("\n Matrix Bracket INVERSE:");
+    //    printf("\n");
+    //    for(int r = 0; r< bracketInvert.size().height; r++){
+    //        for(int c = 0; c< bracketInvert.size().width; c++){
+    //        printf(" %f,  ", bracketInvert.at<float>(r,c) );
+    //        }
+    //        printf(" \n" );
+    //    }
 
 
+    //    printf("\n");
+    //    printf("\n B:");
+    //    printf("\n");
+    //    for(int r = 0; r< bvec.size().height; r++){
+    //        //for(int c = 0; c< bvec.size().width; c++){
+    //        printf(" %f,  ", bvec.at<float>(r,0));
+    //       // }
+    //        printf(" \n" );
+    //    }
 
 
-     vector<float> L;
-     printf("\n \n Lightvectors \n");
-     for(int i = 0; i<v.size().height-2; i+=2){
-         L.push_back(v.at<float>(i,0));
-         L.push_back(v.at<float>(i+1,0));
-         printf("%f " , v.at<float>(i,0));
-         printf("%f \n " , v.at<float>(i+1,0));
-     }
-     setLightvectorsUsingPatches(L);
+
+
+    vector<float> L;
+    printf("\n \n Lightvectors \n");
+    for(int i = 0; i<v.size().height-2; i+=2){
+        L.push_back(v.at<float>(i,0));
+        L.push_back(v.at<float>(i+1,0));
+        printf("%f " , v.at<float>(i,0));
+        printf("%f \n " , v.at<float>(i+1,0));
+    }
+    setLightvectorsUsingPatches(L);
 }
 
 //void JohnsonCalculator::calculateLightVectorUsingPatches(){
@@ -185,16 +185,16 @@ void JohnsonCalculator::createMUsingPatches(){
     for(int r=0; r<normalsUsed; r++){
         Mp.at<float>(r,ncols-1) = 1;
     }
-          printf("\n");
-          printf("\n Matrix M:");
-          printf("\n");
-          for(int r = 0; r< Mp.size().height; r++){
-              for(int c = 0; c< Mp.size().width; c++){
-              printf(" %f,  ", Mp.at<float>(r,c) );
-              }
-              printf(" \n \n" );
-          }
-
+    printf("\n");
+    printf("\n Matrix M:");
+    printf("\n");
+    for(int r = 0; r< Mp.size().height; r++){
+        for(int c = 0; c< Mp.size().width; c++){
+            printf(" %f,  ", Mp.at<float>(r,c) );
+        }
+        printf(" \n \n" );
+    }
+    printf("finished Mp" );
     //imshow("Matrix Mp", Mp);
 }
 
@@ -241,7 +241,7 @@ void JohnsonCalculator::calculateIntensityUsingPatches(const int distance, vecto
     }
     printf("nach berechnung \n");
     for (int i = 0; i <Ip.size().height; ++i) {
-          printf("\n %f",  Ip.at<float>(i, 0));
+        printf("\n %f",  Ip.at<float>(i, 0));
     }
 }
 
@@ -257,10 +257,10 @@ void JohnsonCalculator::setNormalVecs(const int distance, vector<Point> gss )
         //        float l = sqrt(dx*dx+dy*dy);
         //        dx/=l;
         //        dy/=l;
-        //Point normalOne = Point(dy,-dx);
-        Point2f normalAsPoint = Point(-dy,dx);
+        Point normalOne = Point(dy,-dx);
+        //        Point2f normalAsPoint = Point(-dy,dx);
 
-        normals.push_back(normalAsPoint);
+        normals.push_back(normalOne);
     }
     createM();
     createMUsingPatches();
@@ -272,8 +272,16 @@ vector<Point2f> JohnsonCalculator::getNormals() const
     return normals;
 }
 
-void JohnsonCalculator::clearNormals(){
+void JohnsonCalculator::clearAll(){
     normals.clear();
+    M = Mat::zeros(0,0,CV_32F);
+    I= Mat::zeros(0,0,CV_32F);
+    Mp= Mat::zeros(0,0,CV_32F);
+    C= Mat::zeros(0,0,CV_32F);
+    Ip= Mat::zeros(0,0,CV_32F);
+    lightvector = Point();
+    lightvectorsUsingPatches.clear();
+    normalsUsed = 0;
 }
 
 void JohnsonCalculator::createC(){
@@ -283,18 +291,18 @@ void JohnsonCalculator::createC(){
     for(int c = 0; c< C.size().width-1; c++){
         C.at<float>(r,c) = -1.0f ;
         C.at<float>(r,c+2) = 1.0f ;
-         r++;
+        r++;
     }
 
-//          printf("\n");
-//          printf("\n Matrix C:");
-//          printf("\n");
-//          for(int r = 0; r< C.size().height; r++){
-//              for(int c = 0; c< C.size().width; c++){
-//              printf(" %f,  ", C.at<float>(r,c) );
-//              }
-//              printf(" \n \n" );
-//          }
+    //          printf("\n");
+    //          printf("\n Matrix C:");
+    //          printf("\n");
+    //          for(int r = 0; r< C.size().height; r++){
+    //              for(int c = 0; c< C.size().width; c++){
+    //              printf(" %f,  ", C.at<float>(r,c) );
+    //              }
+    //              printf(" \n \n" );
+    //          }
 }
 
 
