@@ -253,18 +253,18 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *event){
 
 void MainWindow::paintSubContour(){
     Mat temp = imageCV.clone();
-   // int color = 0;
+    int color = 0;
 
     for (int i = 0; i < cc->getSubContour().size()-1; ++i) {
-     //   color++;
-        line(temp,cc->getSubContour()[i],cc->getSubContour()[i+1],Scalar (0, 255,0), 1);
+      color++;
+     //   line(temp,cc->getSubContour()[i],cc->getSubContour()[i+1],Scalar (0, 255,0), 1);
 
-//        if(color < 255){
-//        line(temp,cc->getSubContour()[i],cc->getSubContour()[i+1],Scalar (color, 0,0), 3);
-//        }
-//         else if (color <2*255){
-//            line(temp,cc->getSubContour()[i],cc->getSubContour()[i+1],Scalar ((double) color-255,0), 3);
-//        }
+        if(color < 255){
+        line(temp,cc->getSubContour()[i],cc->getSubContour()[i+1],Scalar (color, 0,0), 3);
+        }
+         else if (color <2*255){
+            line(temp,cc->getSubContour()[i],cc->getSubContour()[i+1],Scalar ((double)255- color,0), 3);
+        }
     }
     imageQT= Mat2QImage(temp);
     ui->lbl_image->setPixmap(QPixmap::fromImage(imageQT));
