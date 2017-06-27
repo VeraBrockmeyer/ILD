@@ -253,18 +253,18 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *event){
 
 void MainWindow::paintSubContour(){
     Mat temp = imageCV.clone();
-    int color = 0;
+//    int color = 0;
 
     for (int i = 0; i < cc->getSubContour().size()-1; ++i) {
-      color++;
-     //   line(temp,cc->getSubContour()[i],cc->getSubContour()[i+1],Scalar (0, 255,0), 1);
+//      color++;
+        line(temp,cc->getSubContour()[i],cc->getSubContour()[i+1],Scalar (0, 255,0), 1);
 
-        if(color < 255){
-        line(temp,cc->getSubContour()[i],cc->getSubContour()[i+1],Scalar (color, 0,0), 3);
-        }
-         else if (color <2*255){
-            line(temp,cc->getSubContour()[i],cc->getSubContour()[i+1],Scalar ((double)255- color,0), 3);
-        }
+//        if(color < 255){
+//        line(temp,cc->getSubContour()[i],cc->getSubContour()[i+1],Scalar (color, 0,0), 3);
+//        }
+//         else if (color <2*255){
+//            line(temp,cc->getSubContour()[i],cc->getSubContour()[i+1],Scalar ((double)255- color,0), 3);
+//        }
     }
     imageQT= Mat2QImage(temp);
     ui->lbl_image->setPixmap(QPixmap::fromImage(imageQT));
@@ -465,7 +465,7 @@ void MainWindow::drawLVUsingPatches(){
     }
     ui->lbl_image->setPixmap(QPixmap::fromImage(imageQT));
     LVPainter.end();
-    saveResults();
+
 }
 
 
@@ -486,13 +486,15 @@ void MainWindow::drawFinalLightvector(){
         y+=py;
         counter++;
     }
-    printf("GEMITTELTER LICHTVEKTOR: %f , %f" , x,y);
+
     x/=counter;
     y/=counter;
 
     float factor=100;
     x*=factor;
     y*=factor;
+    printf("GEMITTELTER LICHTVEKTOR: %f , %f" , x,y);
+    finalLV = Point2f(x,y);
     int middleOfContour;
     int cLength = cc->getSampledSubContour().size(); //length of contour
     if(cLength % 2 == 0){
@@ -529,6 +531,7 @@ void MainWindow::saveResults(){
             Point2f p = Point2f(jc->getLightvectorsUsingPatches()[i],jc->getLightvectorsUsingPatches()[i+1]);
             fs << "p" << p;
             }
+            fs <<"final LV" << finalLV;
         }
     }
 }

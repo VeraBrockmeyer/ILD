@@ -63,7 +63,7 @@ private:
     void drawLVUsingPatches();
     void saveResults();
     void drawFinalLightvector();
-
+    cv::Point2f finalLV;
 
 };
 
