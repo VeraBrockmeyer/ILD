@@ -93,15 +93,36 @@ Point2f JohnsonCalculator::findLVofHighestIntensity()
 {
     float maxVal= 0;
     int maxValPos= 0;
-    for (int i = 0; i < Ip.size().height; ++i) {
-        float val = Ip.at<float>(i,0);
-        if(val>maxVal){
-            maxVal=val;
-            maxValPos=i;
+    vector<float> intensityperPatch;
+    float intensitytemp;
+//    for (int i = 0; i < Ip.size().height; i++) {
+//        float val = Ip.at<float>(i,0);
+//        if(val>maxVal){
+//            maxVal=val;
+//            maxValPos=i;
+//        }
+//    }
+    int ip=0;
+    while(ip<Ip.size().height){
+        for (int i = 0; i <patchSize; i++) {
+            intensitytemp += Ip.at<float>(i,0);
         }
+        intensityperPatch.push_back(intensitytemp);
+        ip+=patchSize;
     }
 
+        for (int i = 0; i < intensityperPatch.size(); i++) {
+            float val = intensityperPatch.at(i);
+            if(val>maxVal){
+                maxVal=val;
+                maxValPos=i;
+            }
+        }
+
+
     vector<float> LVs = getLightvectorsUsingPatches();
+    printf("\n Laenge Ip %i und Laenge LVS %i" , Ip.size().height, LVs.size());
+    //return Point2f(LVs.at(maxValPos/patchSize*2),LVs.at(maxValPos/patchSize*2+1));
     return Point2f(LVs.at(maxValPos*2),LVs.at(maxValPos*2+1));
 }
 
