@@ -89,6 +89,22 @@ void JohnsonCalculator::calculateLightVectorUsingPatches(){
     setLightvectorsUsingPatches(L);
 }
 
+Point2f JohnsonCalculator::findLVofHighestIntensity()
+{
+    float maxVal= 0;
+    int maxValPos= 0;
+    for (int i = 0; i < Ip.size().height; ++i) {
+        float val = Ip.at<float>(i,0);
+        if(val>maxVal){
+            maxVal=val;
+            maxValPos=i;
+        }
+    }
+
+    getLightvectorsUsingPatches();
+    return null;
+}
+
 //void JohnsonCalculator::calculateLightVectorUsingPatches(){
 //    Mat v;
 //    cv::solve(Mp,Ip,v, DECOMP_SVD );

@@ -472,23 +472,24 @@ void MainWindow::drawLVUsingPatches(){
 void MainWindow::drawFinalLightvector(){
     QPainter LVPainter(&imageQT);
     LVPainter.setPen(bluePen);
-    vector<float> LVs = jc->getLightvectorsUsingPatches();
-    float x,y;
-    float px,py;
-    float counter =0;
-    for (int i= 0; i<LVs.size()-2; i+=2){
-        px=LVs.at(i);
-        py=LVs.at(i+1);
-        float vLenght = px*px + py*py;
-        px/=vLenght;
-        py/=vLenght;
-        x+=px;
-        y+=py;
-        counter++;
-    }
-    printf("GEMITTELTER LICHTVEKTOR: %f , %f" , x,y);
-    x/=counter;
-    y/=counter;
+   Point2f lv = jc->findLVofHighestIntensity();
+//    vector<float> LVs = jc->getLightvectorsUsingPatches();
+//    float x,y;
+//    float px,py;
+//    float counter =0;
+//    for (int i= 0; i<LVs.size()-2; i+=2){
+//        px=LVs.at(i);
+//        py=LVs.at(i+1);
+//        float vLenght = px*px + py*py;
+//        px/=vLenght;
+//        py/=vLenght;
+//        x+=px;
+//        y+=py;
+//        counter++;
+//    }
+//    printf("GEMITTELTER LICHTVEKTOR: %f , %f" , x,y);
+//    x/=counter;
+//    y/=counter;
 
     float factor=100;
     x*=factor;
@@ -503,7 +504,7 @@ void MainWindow::drawFinalLightvector(){
     }
     Point Pos = cc->getSampledSubContour().at(middleOfContour);
 
-    LVPainter.drawLine(Pos.x, Pos.y,Pos.x+x, Pos.y+y);
+    LVPainter.drawLine(Pos.x, Pos.y,Pos.x+lv.x, Pos.y+lv.y);
 
     ui->lbl_image->setPixmap(QPixmap::fromImage(imageQT));
     LVPainter.end();
