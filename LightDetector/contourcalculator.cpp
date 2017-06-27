@@ -10,48 +10,51 @@ ContourCalculator::ContourCalculator()
 ContourCalculator::~ContourCalculator(){
 
 }
- void ContourCalculator::computeContours(cv::Mat maskImage){
-     ContourCalculator::maskImage=maskImage;
-     // Dilation to make sure that the Object is bigger than its mask
-     Mat imageAfterMorph;
-     int erosion_size = 1;
-         cv::Mat element = getStructuringElement(cv::MORPH_ELLIPSE,
-             cv::Size(2 * erosion_size + 1, 2 * erosion_size + 1),
-             cv::Point(erosion_size, erosion_size));
-     morphologyEx(maskImage, imageAfterMorph, cv::MORPH_ERODE, element, cv::Point(-1, -1));
-      Mat imageCanny;
-     // Canny to detect edges
-     Canny(imageAfterMorph, imageCanny, 0, 1200 , 5);
-     // Find associated Contours and draw them (in our case it) into the Mat imageWithContours
-     findContours(imageCanny, MainContour, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0,0));
+void ContourCalculator::computeContours(cv::Mat maskImage){
+    ContourCalculator::maskImage=maskImage;
+    // Dilation to make sure that the Object is bigger than its mask
+    Mat imageAfterMorph;
+    int erosion_size = 1;
+    cv::Mat element = getStructuringElement(cv::MORPH_ELLIPSE,
+                                            cv::Size(2 * erosion_size + 1, 2 * erosion_size + 1),
+                                            cv::Point(erosion_size, erosion_size));
+    morphologyEx(maskImage, imageAfterMorph, cv::MORPH_ERODE, element, cv::Point(-1, -1));
+    Mat imageCanny;
+    // Canny to detect edges
+    Canny(imageAfterMorph, imageCanny, 0, 1200 , 5);
+    // Find associated Contours and draw them (in our case it) into the Mat imageWithContours
+    findContours(imageCanny, MainContour, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0,0));
     // printf("\n Anzahl Konturen: %i " , MainContour.size());
 
- }
+}
 
- std::vector<cv::Vec4i> ContourCalculator::getHierarchy() const
- {
-     return hierarchy;
- }
+std::vector<cv::Vec4i> ContourCalculator::getHierarchy() const
+{
+    return hierarchy;
+}
 
- void ContourCalculator::setImageCV(const cv::Mat &value)
- {
-     imageCV = value;
- }
+void ContourCalculator::setImageCV(const cv::Mat &value)
+{
+    imageCV = value;
+}
 
 
- void ContourCalculator::clearContours(){
-     SubContour.clear();
-     MainContour.clear();
+void ContourCalculator::clearContours(){
+    SubContour.clear();
+    MainContour.clear();
     SampledSubContour.clear();
     hierarchy.clear();
 }
 void ContourCalculator:: sortSubContour(){
     // apply it to the contours:
+    printf("Start sort \n");
     vector<Point> SortedSubContour;
     int mostLeftPos = 0;
     int mostRightPos = 0;
     Point mostLeftDown = Point(maskImage.size().width,0);
     Point mostRightDown = Point(0,0);
+    printf("Start Search \n");
+
     for (int i = 0; i < SubContour.size()-1; ++i) {
         Point p = SubContour[i];
         if(p.x<=mostLeftDown.x && p.y >= mostLeftDown.y){
@@ -62,21 +65,22 @@ void ContourCalculator:: sortSubContour(){
             mostRightDown = p;
             mostRightPos=i;
         }
-    }
+        }
+    printf("End Search \n");
 
+    printf("Size of Subcontour: %i, MostLeftPos: %i, MostRightPos: %i \n",SubContour.size(), mostLeftPos, mostRightPos);
+    if (hasHighestPoint && mostRightPos>mostLeftPos){
 
-    for (int i = mostLeftPos; i >= 0; i--) {
-     SortedSubContour.push_back(SubContour[i]);
-    }
         if(mostRightPos != 0 && mostRightPos != SubContour.size()-1){
-    for (int i = SubContour.size()-1; i >= mostRightPos; i--) {
-         SortedSubContour.push_back(SubContour[i]);
-     }
+            for (int i = mostRightPos ; i < SubContour.size(); i++) {
+                SortedSubContour.push_back(SubContour[i]);
+            }
+        }
+        for (int i = 0; i <= mostLeftPos; i++) {
+            SortedSubContour.push_back(SubContour[i]);
+        }
+        SubContour = SortedSubContour;
     }
-
-
-
-   SubContour = SortedSubContour;
 }
 
 std::vector<std::vector<cv::Point> > ContourCalculator::getMainContour() const
@@ -114,10 +118,10 @@ void ContourCalculator::runLineIterator(Mat tempLineImg,Point pt1, Point pt2){
     // from 8-bit 3-channel image to the buffer
     LineIterator it(tempLineImg, pt1, pt2, 8, true);
     for(int i = 0; i < it.count; i++, ++it){
-       Point buffer = it.pos();
-       SampledSubContour.push_back(buffer);
+        Point buffer = it.pos();
+        SampledSubContour.push_back(buffer);
     }
-   }
+}
 
 void  ContourCalculator::computePixelCoordsAlongContour(){
     for (int i = 0; i < SubContour.size()-1; ++i) {
@@ -135,7 +139,7 @@ void  ContourCalculator::computePixelCoordsAlongContour(){
     circle(debug,SampledSubContour[SampledSubContour.size()-1],5,Scalar(255,0,0));
 
     foreach (Point c, SampledSubContour) {
-    circle(debug,c,1,Scalar(0,0,255));
+        circle(debug,c,1,Scalar(0,0,255));
     }
     //imshow("pixel Contour",debug);
 
@@ -158,23 +162,25 @@ void ContourCalculator::savePartOfContour(QRect CroppedRect){
         int yCon= MainContour.at(0).at(i).y;
 
         if (CroppedRect.contains(xCon, yCon)){
+            if(i==0)
+                hasHighestPoint=true;
             SubContour.push_back(Point(xCon,yCon));
             circle(imageDebug,Point(xCon,yCon),1,Scalar(0,255,0));
 
         }
         else{
-        circle(imageDebug,Point(xCon,yCon),1,Scalar(255,0,0));
+            circle(imageDebug,Point(xCon,yCon),1,Scalar(255,0,0));
 
         }
     }
-    //printf("\n Laenge der Subkontur nach Selektierung: %i (Soll Anzahl aller Konturenpunkte innerhalb der Auswahl zaehlen)" , SubContour.size());
+    printf("\n Laenge der Subkontur nach Selektierung: %i (Soll Anzahl aller Konturenpunkte innerhalb der Auswahl zaehlen)" , SubContour.size());
     if(SubContour.size()>=3){
-       sortSubContour();
-      imshow("Debug", imageDebug);
-       computePixelCoordsAlongContour();
-       //printf("\n Laenge der SampledSubKontur insgesamt: %i " , SampledSubContour.size());
+        //        imshow("Debug", imageDebug);
+        sortSubContour();
+        computePixelCoordsAlongContour();
+        //printf("\n Laenge der SampledSubKontur insgesamt: %i " , SampledSubContour.size());
 
-      }
+    }
 
 }
 

@@ -68,7 +68,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_btm_image_clicked()
 {
-    QString filename = QFileDialog::getOpenFileName(this, tr("Choose the Image you want to analyse"), "Testbilder/mitMasken", tr("Images (*.jpg)"));
+    QString filename = QFileDialog::getOpenFileName(this, tr("Choose the Image you want to analyse"), "Testbilder/mitMasken", tr("Images (*.jpg *.tif)"));
     std::string str = filename.toStdString();
     imageCV = imread(str.c_str(), CV_LOAD_IMAGE_COLOR);
     std::string filenameCV = str.substr(0,str.size()-4);
@@ -160,16 +160,17 @@ void MainWindow::hideVisual(){
 void MainWindow::on_btm_Run_clicked(){
 
     cc->computeContours(maskImage);
-
+    cc->setImageCV(imageCV);
     imageCVwithContour = imageCV.clone();
     for (int i=0; i<cc->getMainContour().size(); i++){
         drawContours( imageCVwithContour, cc->getMainContour(), i, Scalar (0, 255,0), 1, 8, cc->getHierarchy(), 0, Point() );
 
     }
-    //imshow("main contour", imageCVwithContour);
-    //Display Contour as QImage
+//    imshow("main contour", imageCVwithContour);
+//    Display Contour as QImage
     imageQT= Mat2QImage(imageCVwithContour);
     ui->lbl_image->setPixmap(QPixmap::fromImage(imageQT));
+//    paintMainContour();
     ui->btm_selection->show();
     ui->btm_Run->hide();
     runRectMode = true;
@@ -241,9 +242,39 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *event){
 
 void MainWindow::paintSubContour(){
     Mat temp = imageCV.clone();
+   // int color = 0;
+
     for (int i = 0; i < cc->getSubContour().size()-1; ++i) {
-        line(temp,cc->getSubContour()[i],cc->getSubContour()[i+1],Scalar (0, 255,0), 1);
+     //   color++;
+        line(temp,cc->getSubContour()[i],cc->getSubContour()[i+1],Scalar (255, 0,0), 1);
+
+//        if(color < 255){
+//        line(temp,cc->getSubContour()[i],cc->getSubContour()[i+1],Scalar (color, 0,0), 3);
+//        }
+//         else if (color <2*255){
+//            line(temp,cc->getSubContour()[i],cc->getSubContour()[i+1],Scalar ((double) color-255,0), 3);
+//        }
     }
+    imageQT= Mat2QImage(temp);
+    ui->lbl_image->setPixmap(QPixmap::fromImage(imageQT));
+}
+
+void MainWindow::paintMainContour(){
+    Mat temp = imageCV.clone();
+    int color = 0;
+    for (int i = 0; i < cc->getMainContour()[0].size()-1; ++i) {
+        color++;
+        if(color < 255){
+        line(temp,cc->getMainContour()[0][i],cc->getMainContour()[0][i+1],Scalar (color, 0,0), 1);
+        }
+        else if (color <2*255){
+         line(temp,cc->getMainContour()[0][i],cc->getMainContour()[0][i+1],Scalar (0, (double) color-255,0), 1);
+        }
+        else if (color <2*255){
+         line(temp,cc->getMainContour()[0][i],cc->getMainContour()[0][i+1],Scalar (0,0, (double)color-(2*255)), 1);
+        }
+    }
+    circle(temp,cc->getMainContour()[0][0],3, Scalar(255,255,255),2);
     imageQT= Mat2QImage(temp);
     ui->lbl_image->setPixmap(QPixmap::fromImage(imageQT));
 }

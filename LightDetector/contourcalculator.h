@@ -33,6 +33,7 @@ private:
     std::vector<cv::Point> SampledSubContour;
     std::vector<cv::Vec4i> hierarchy;
     cv::Mat maskImage, imageCV;
+    bool hasHighestPoint = false;
 };
 
 #endif // CONTOURCALCULATOR_H

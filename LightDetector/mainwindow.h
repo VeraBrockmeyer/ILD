@@ -56,6 +56,7 @@ private:
     void markNrOfContour();
     void deleteDrawnSelection();
     void paintSubContour();
+     void paintMainContour();
     void drawNormalVecs(int distance);
     void calculateIntensity(int R, vector<cv::Point> N, vector<cv::Point> L, int A);
     void drawLV();
