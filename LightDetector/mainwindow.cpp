@@ -435,7 +435,7 @@ void MainWindow::drawLV(){
         middleOfContour = (cLength-2)/2;
     }
     Point Pos = cc->getSampledSubContour().at(middleOfContour);
-    int factor=5;
+    int factor=10;
     LV.x = LV.x*factor;
     LV.y = LV.y*factor;
     Point imageLV = Pos+LV;
@@ -454,12 +454,12 @@ void MainWindow::drawLVUsingPatches(){
     LVPainter.setPen(whitePen);
     vector<float> LVs = jc->getLightvectorsUsingPatches();
     int startX, startY,endX, endY, c=0;
-
+    int factor = 12;
     for (int i=0; i<LVs.size()-1 ; i+=2){
         startX = cc->getSampledSubContour().at(c*jc->patchSize*distanceOfNormals+jc->patchSize*distanceOfNormals/2).x;
         startY = cc->getSampledSubContour().at(c*jc->patchSize*distanceOfNormals+jc->patchSize*distanceOfNormals/2).y;
-        endX = startX + LVs.at(i);
-        endY = startY + LVs.at(i+1);
+        endX = startX + LVs.at(i)*factor;
+        endY = startY + LVs.at(i+1)*factor;
         c++;
         LVPainter.drawLine(startX, startY,endX, endY);
     }
@@ -490,7 +490,7 @@ void MainWindow::drawFinalLightvector(){
     x/=counter;
     y/=counter;
 
-    float factor=100;
+    int factor=450;
     x*=factor;
     y*=factor;
     printf("GEMITTELTER LICHTVEKTOR: %f , %f" , x,y);

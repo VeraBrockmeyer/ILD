@@ -270,7 +270,7 @@ void JohnsonCalculator::setNormalVecs(const int distance, vector<Point> gss, Mat
 //        float val = 0.299*red + 0.587*green + 0.114*blue;
 //        printf("Intensity: %f \n",val);
 //        if(val>3){
-        normals.push_back(normalOne);
+        normals.push_back(normalAsPoint);
     //}
 //        else { normals.push_back(normalOne);}
     }
