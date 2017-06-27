@@ -17,7 +17,7 @@ public:
     //void setNormals(const vector<Point>  &value);
     vector<Point2f> getNormals() const;
     void clearAll();
-    void setNormalVecs(const int distance, vector<Point> gss );
+    void setNormalVecs(const int distance, vector<Point> gss , Mat maskImage);
     void calculateLightVector();
    // void drawNormalVecs(int distance);
     void setLightvector(Point L);

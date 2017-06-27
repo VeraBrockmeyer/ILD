@@ -149,7 +149,7 @@ void MainWindow::on_btm_ShowLV_clicked()
 
 void MainWindow::on_btm_ShowN_clicked()
 {
-    jc->setNormalVecs(distanceOfNormals, cc->getSampledSubContour());
+    jc->setNormalVecs(distanceOfNormals, cc->getSampledSubContour(),maskImage);
     drawNormalVecs(distanceOfNormals);
     //ui->btm_intensity->show();
     ui->btm_ShowLV->show();
@@ -474,21 +474,28 @@ void MainWindow::drawFinalLightvector(){
     LVPainter.setPen(bluePen);
     vector<float> LVs = jc->getLightvectorsUsingPatches();
     float x,y;
+    float px,py;
     float counter =0;
     for (int i= 0; i<LVs.size()-2; i+=2){
-        x+=LVs.at(i);
-        y+=LVs.at(i+1);
+        px=LVs.at(i);
+        py=LVs.at(i+1);
+        float vLenght = px*px + py*py;
+        px/=vLenght;
+        py/=vLenght;
+        x+=px;
+        y+=py;
         counter++;
     }
     printf("GEMITTELTER LICHTVEKTOR: %f , %f" , x,y);
     x/=counter;
     y/=counter;
-    float factor=30;
+
+    float factor=100;
     x*=factor;
     y*=factor;
     int middleOfContour;
     int cLength = cc->getSampledSubContour().size(); //length of contour
-    if(cLength%2 == 0){
+    if(cLength % 2 == 0){
         middleOfContour = (cLength-1)/2;
     }
     else if(cLength%2 == 1){

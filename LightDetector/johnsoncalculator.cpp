@@ -247,20 +247,31 @@ void JohnsonCalculator::calculateIntensityUsingPatches(const int distance, vecto
 
 
 
-void JohnsonCalculator::setNormalVecs(const int distance, vector<Point> gss )
+void JohnsonCalculator::setNormalVecs(const int distance, vector<Point> gss, Mat maskImage )
 {
     for(int i = 0; i < gss.size()-distance; i+=distance){
         Point startPos = gss.at(i);
         Point endPos = gss.at(i+distance);
         float dx = endPos.x - startPos.x;
         float dy = endPos.y - startPos.y;
-        //        float l = sqrt(dx*dx+dy*dy);
-        //        dx/=l;
-        //        dy/=l;
-        Point normalOne = Point(dy,-dx);
-        //        Point2f normalAsPoint = Point(-dy,dx);
-
-        normals.push_back(normalOne);
+        float vLenght = dx*dx + dy*dy;
+        dx/=vLenght;
+        dy/=vLenght;
+        dx*=50.;
+        dy*=50.;
+        Point2f normalOne = Point2f(dy,-dx);
+        Point2f normalAsPoint = Point2f(-dy,dx);
+        int endXOne = gss.at(i+distance/2).x - normalOne.x;
+        int endYOne = gss.at(i+distance/2).y - normalOne.y;
+        Vec3b intensity = maskImage.at<Vec3b>(endYOne,endXOne);
+        uchar blue = intensity.val[0];
+        uchar green = intensity.val[1];
+        uchar red = intensity.val[2];
+        float val = 0.299*red + 0.587*green + 0.114*blue;
+        printf("Intensity: %f \n",val);
+        if(val>3){
+        normals.push_back(normalAsPoint);}
+        else { normals.push_back(normalOne);}
     }
     createM();
     createMUsingPatches();
