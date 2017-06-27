@@ -101,8 +101,8 @@ Point2f JohnsonCalculator::findLVofHighestIntensity()
         }
     }
 
-    getLightvectorsUsingPatches();
-    return null;
+    vector<float> LVs = getLightvectorsUsingPatches();
+    return Point2f(LVs.at(maxValPos*2),LVs.at(maxValPos*2+1));
 }
 
 //void JohnsonCalculator::calculateLightVectorUsingPatches(){

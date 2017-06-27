@@ -53,14 +53,11 @@ void ContourCalculator::clearContours(){
 }
 void ContourCalculator:: sortSubContour(){
     // apply it to the contours:
-    printf("Start sort \n");
     vector<Point> SortedSubContour;
     int mostLeftPos = 0;
     int mostRightPos = 0;
     Point mostLeftDown = Point(maskImage.size().width,0);
     Point mostRightDown = Point(0,0);
-    printf("Start Search \n");
-
     for (int i = 0; i < SubContour.size()-1; ++i) {
         Point p = SubContour[i];
         if(p.x<=mostLeftDown.x && p.y >= mostLeftDown.y){
@@ -71,22 +68,21 @@ void ContourCalculator:: sortSubContour(){
             mostRightDown = p;
             mostRightPos=i;
         }
-        }
-    printf("End Search \n");
-
-    printf("Size of Subcontour: %i, MostLeftPos: %i, MostRightPos: %i \n",SubContour.size(), mostLeftPos, mostRightPos);
-    if (hasHighestPoint && mostRightPos>mostLeftPos){
-
-        if(mostRightPos != 0 && mostRightPos != SubContour.size()-1){
-            for (int i = mostRightPos ; i < SubContour.size(); i++) {
-                SortedSubContour.push_back(SubContour[i]);
-            }
-        }
-        for (int i = 0; i <= mostLeftPos; i++) {
-            SortedSubContour.push_back(SubContour[i]);
-        }
-        SubContour = SortedSubContour;
     }
+
+
+    for (int i = mostLeftPos; i >= 0; i--) {
+     SortedSubContour.push_back(SubContour[i]);
+    }
+        if(mostRightPos != 0 && mostRightPos != SubContour.size()-1){
+    for (int i = SubContour.size()-1; i >= mostRightPos; i--) {
+         SortedSubContour.push_back(SubContour[i]);
+     }
+    }
+
+
+
+   SubContour = SortedSubContour;
 }
 
 std::vector<std::vector<cv::Point> > ContourCalculator::getMainContour() const

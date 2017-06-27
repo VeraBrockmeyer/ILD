@@ -29,7 +29,7 @@ public:
     int getNrOfPatches();
     void calculateIntensityUsingPatches(const int distance, vector<Point> gss, Mat img);
     void calculateLightVectorUsingPatches();
-     cv::Point2f findLVofHighestIntensity();
+    cv::Point2f findLVofHighestIntensity();
 
 
     Mat getM() const;

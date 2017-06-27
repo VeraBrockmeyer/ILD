@@ -470,45 +470,29 @@ void MainWindow::drawLVUsingPatches(){
 
 
 void MainWindow::drawFinalLightvector(){
-    QPainter LVPainter(&imageQT);
-    LVPainter.setPen(bluePen);
-   Point2f lv = jc->findLVofHighestIntensity();
-//    vector<float> LVs = jc->getLightvectorsUsingPatches();
-//    float x,y;
-//    float px,py;
-//    float counter =0;
-//    for (int i= 0; i<LVs.size()-2; i+=2){
-//        px=LVs.at(i);
-//        py=LVs.at(i+1);
-//        float vLenght = px*px + py*py;
-//        px/=vLenght;
-//        py/=vLenght;
-//        x+=px;
-//        y+=py;
-//        counter++;
+//    QPainter LVPainter(&imageQT);
+//    LVPainter.setPen(whitePen);
+//    Point LV = jc->findLVofHighestIntensity();
+//    int middleOfContour;
+//    int cLength = cc->getSampledSubContour().size(); //length of contour
+//    if(cLength%2 == 0){
+//        middleOfContour = (cLength-1)/2;
 //    }
-//    printf("GEMITTELTER LICHTVEKTOR: %f , %f" , x,y);
-//    x/=counter;
-//    y/=counter;
+//    else if(cLength%2 == 1){
+//        middleOfContour = (cLength-2)/2;
+//    }
+//    Point Pos = cc->getSampledSubContour().at(middleOfContour);
+//    int factor=5;
+//    LV.x = LV.x*factor;
+//    LV.y = LV.y*factor;
+//    Point imageLV = Pos+LV;
 
-    float factor=100;
-    x*=factor;
-    y*=factor;
-    int middleOfContour;
-    int cLength = cc->getSampledSubContour().size(); //length of contour
-    if(cLength % 2 == 0){
-        middleOfContour = (cLength-1)/2;
-    }
-    else if(cLength%2 == 1){
-        middleOfContour = (cLength-2)/2;
-    }
-    Point Pos = cc->getSampledSubContour().at(middleOfContour);
+//    LVPainter.drawLine(Pos.x, Pos.y,imageLV.x, imageLV.y);
 
-    LVPainter.drawLine(Pos.x, Pos.y,Pos.x+lv.x, Pos.y+lv.y);
-
-    ui->lbl_image->setPixmap(QPixmap::fromImage(imageQT));
-    LVPainter.end();
-    saveResults();
+//    //LVPainter.drawLine(PosX, PosY,PosX+(LV.x*factor), PosY+(LV.y*factor));
+//    ui->lbl_image->setPixmap(QPixmap::fromImage(imageQT));
+//    LVPainter.end();
+//    saveResults();
 }
 
 void MainWindow::saveResults(){
