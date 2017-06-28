@@ -12,7 +12,7 @@ using namespace std;
 
 //Property Settings
 bool usePatches = true; //false = basic version und true = version with patches
-bool useHighestIntensity = false;
+bool useHighestIntensity = true; //has only impact, if usePatches is true
 int distanceOfNormals=10;
 
 QImage imageQT;
@@ -123,7 +123,13 @@ void MainWindow::on_btm_ShowLV_clicked()
         jc->calculateIntensityUsingPatches(distanceOfNormals, cc->getSampledSubContour(), imageCV);
         jc->calculateLightVectorUsingPatches();
         drawLVUsingPatches();
+
+        if(!useHighestIntensity){
         drawFinalLightvector();
+        }
+        else if(useHighestIntensity){
+            drawFinalLightvectorOnHighestIntensity();
+        }
     }
     ui->btm_ShowLV->hide();
 }
@@ -446,6 +452,32 @@ void MainWindow::saveResults(){
             fs <<"final LV" << finalLV;
         }
     }
+}
+
+void MainWindow::drawFinalLightvectorOnHighestIntensity(){
+    QPainter LVPainter(&imageQT);
+    LVPainter.setPen(bluePen);
+    Point LV = jc->findLVofHighestIntensity();
+    int middleOfContour;
+    int cLength = cc->getSampledSubContour().size(); //length of contour
+    if(cLength%2 == 0){
+        middleOfContour = (cLength-1)/2;
+    }
+    else if(cLength%2 == 1){
+        middleOfContour = (cLength-2)/2;
+    }
+    Point Pos = cc->getSampledSubContour().at(middleOfContour);
+    int factor=5;
+    LV.x = LV.x*factor;
+    LV.y = LV.y*factor;
+    Point imageLV = Pos+LV;
+
+    LVPainter.drawLine(Pos.x, Pos.y,imageLV.x, imageLV.y);
+
+   //printf("\n Eingezeichneter Lichtvektor für Patch mit der größten Intensitaet (%f, %f)", LV.x, LV.y);
+    ui->lbl_image->setPixmap(QPixmap::fromImage(imageQT));
+    LVPainter.end();
+    saveResults();
 }
 
 

@@ -239,4 +239,33 @@ void JohnsonCalculator::createC(){
 }
 
 
+Point2f JohnsonCalculator::findLVofHighestIntensity()
+{
+    float maxVal= 0;
+    int maxValPos= 0;
+    vector<float> intensityperPatch;
+    float intensitytemp;
+
+    int ip=0;
+    while(ip<Ip.size().height){
+        for (int i = 0; i <patchSize; i++) {
+            intensitytemp += Ip.at<float>(i,0);
+        }
+        intensityperPatch.push_back(intensitytemp);
+        ip+=patchSize;
+    }
+
+        for (int i = 0; i < intensityperPatch.size(); i++) {
+            float val = intensityperPatch.at(i);
+            if(val>maxVal){
+                maxVal=val;
+                maxValPos=i;
+            }
+        }
+
+
+    vector<float> LVs = getLightvectorsUsingPatches();
+    return Point2f(LVs.at(maxValPos*2),LVs.at(maxValPos*2+1));
+}
+
 

@@ -48,11 +48,9 @@ private:
     cv::Mat QImage2Mat(QImage const& src);
     QImage Mat2QImage(cv::Mat const& src);
     void paintRect();
-//    void paintStartPoint();
-//    void markNrOfContour();
     void deleteDrawnSelection();
     void paintSubContour();
-     void paintMainContour();
+    void paintMainContour();
     void drawNormalVecs(int distance);
     void calculateIntensity(int R, vector<cv::Point> N, vector<cv::Point> L, int A);
     void drawLV();
@@ -60,6 +58,7 @@ private:
     void saveResults();
     void drawFinalLightvector();
     cv::Point2f finalLV;
+    void drawFinalLightvectorOnHighestIntensity();
 
 };
 
