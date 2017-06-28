@@ -12,7 +12,6 @@ ContourCalculator::~ContourCalculator(){
 }
 void ContourCalculator::computeContours(cv::Mat maskImage){
     ContourCalculator::maskImage=maskImage;
-//      imshow("Mask",maskImage);
     // Dilation to make sure that the Object is bigger than its mask
     Mat imageAfterMorph;
     int erosion_size = 1;
@@ -20,16 +19,16 @@ void ContourCalculator::computeContours(cv::Mat maskImage){
                                             cv::Size(2 * erosion_size + 1, 2 * erosion_size + 1),
                                             cv::Point(erosion_size, erosion_size));
     morphologyEx(maskImage, imageAfterMorph, cv::MORPH_ERODE, element, cv::Point(-1, -1));
-   //imshow("after Morph",imageAfterMorph);
+    //imshow("after Morph",imageAfterMorph);
     Mat imageCanny;
     // Canny to detect edges
     Canny(imageAfterMorph, imageCanny, 0, 1200 , 5);
     //imshow("canny",imageCanny);
-//   erosion_size = 1;
-//   element = getStructuringElement(cv::MORPH_ELLIPSE,
-//                                            cv::Size(2 * erosion_size + 1, 2 * erosion_size + 1),
-//                                            cv::Point(erosion_size, erosion_size));
-//    morphologyEx(imageCanny, imageCanny, cv::MORPH_DILATE, element, cv::Point(-1, -1));
+    //   erosion_size = 1;
+    //   element = getStructuringElement(cv::MORPH_ELLIPSE,
+    //                                            cv::Size(2 * erosion_size + 1, 2 * erosion_size + 1),
+    //                                            cv::Point(erosion_size, erosion_size));
+    //    morphologyEx(imageCanny, imageCanny, cv::MORPH_DILATE, element, cv::Point(-1, -1));
     //imshow("canny after",imageCanny);
     // Find associated Contours and draw them (in our case it) into the Mat imageWithContours
     findContours(imageCanny, MainContour, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE, Point(0,0));
@@ -62,13 +61,11 @@ void ContourCalculator::clearContours(){
 }
 void ContourCalculator:: sortSubContour(){
     // apply it to the contours:
-    printf("Start sort \n");
     vector<Point> SortedSubContour;
     int mostLeftPos = 0;
     int mostRightPos = 0;
     Point mostLeftDown = Point(maskImage.size().width,0);
     Point mostRightDown = Point(0,0);
-    printf("Start Search \n");
 
     for (int i = 0; i < SubContour.size()-1; ++i) {
         Point p = SubContour[i];
@@ -80,33 +77,19 @@ void ContourCalculator:: sortSubContour(){
             mostRightDown = p;
             mostRightPos=i;
         }
-        }
-    printf("End Search \n");
+    }
 
-//    printf("Size of Subcontour: %i, MostLeftPos: %i, MostRightPos: %i \n",SubContour.size(), mostLeftPos, mostRightPos);
-//    if (hasHighestPoint && mostRightPos>mostLeftPos){
-
-//        if(mostRightPos != 0 && mostRightPos != SubContour.size()-1){
-//            for (int i = mostRightPos ; i < SubContour.size(); i++) {
-//                SortedSubContour.push_back(SubContour[i]);
-//            }
-//        }
-//        for (int i = 0; i <= mostLeftPos; i++) {
-//            SortedSubContour.push_back(SubContour[i]);
-//        }
-//        SubContour = SortedSubContour;
-//    }
 
     if (hasHighestPoint && mostRightPos>mostLeftPos){
-    for (int i = mostLeftPos; i >= 0; i--) {
-         SortedSubContour.push_back(SubContour[i]);
+        for (int i = mostLeftPos; i >= 0; i--) {
+            SortedSubContour.push_back(SubContour[i]);
         }
-            if(mostRightPos != 0 && mostRightPos != SubContour.size()-1){
-        for (int i = SubContour.size()-1; i >= mostRightPos; i--) {
-             SortedSubContour.push_back(SubContour[i]);
-         }
+        if(mostRightPos != 0 && mostRightPos != SubContour.size()-1){
+            for (int i = SubContour.size()-1; i >= mostRightPos; i--) {
+                SortedSubContour.push_back(SubContour[i]);
+            }
         }
-}
+    }
     else{
         for (int i = SubContour.size()-1; i >= 0; i--) {
             SortedSubContour.push_back(SubContour[i]);
@@ -173,7 +156,7 @@ void  ContourCalculator::computePixelCoordsAlongContour(){
     foreach (Point c, SampledSubContour) {
         circle(debug,c,1,Scalar(0,0,255));
     }
-    imshow("pixel Contour",debug);
+    //imshow("pixel Contour",debug);
 
 }
 
@@ -205,11 +188,11 @@ void ContourCalculator::savePartOfContour(QRect CroppedRect){
 
         }
     }
-    printf("\n Laenge der Subkontur nach Selektierung: %i (Soll Anzahl aller Konturenpunkte innerhalb der Auswahl zaehlen)" , SubContour.size());
+    //printf("\n Laenge der Subkontur nach Selektierung: %i (Soll Anzahl aller Konturenpunkte innerhalb der Auswahl zaehlen)" , SubContour.size());
     if(SubContour.size()>=3){
         sortSubContour();
-       imshow("Debug", imageDebug);
-      computePixelCoordsAlongContour();
+        //imshow("Debug", imageDebug);
+        computePixelCoordsAlongContour();
         //printf("\n Laenge der SampledSubKontur insgesamt: %i " , SampledSubContour.size());
 
     }

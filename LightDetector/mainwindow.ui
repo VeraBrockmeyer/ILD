@@ -158,19 +158,6 @@ max-height: 14px;
       <string/>
      </property>
     </widget>
-    <widget class="QRadioButton" name="rad_Con1">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>210</y>
-       <width>101</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Contour Part 1</string>
-     </property>
-    </widget>
     <widget class="QPushButton" name="btm_selection">
      <property name="enabled">
       <bool>true</bool>
@@ -217,19 +204,6 @@ max-height: 14px;
      </property>
      <property name="text">
       <string>Delete Selection</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="lbl_ListContours">
-     <property name="geometry">
-      <rect>
-       <x>40</x>
-       <y>180</y>
-       <width>131</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Contours:</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btm_intensity">

@@ -35,10 +35,6 @@ private slots:
 
     void on_btm_deleteSelection_clicked();
 
-    void on_rad_Con1_toggled(bool checked);
-
-    void on_btm_intensity_clicked();
-
     void on_btm_ShowN_clicked();
 
 protected:
@@ -52,8 +48,8 @@ private:
     cv::Mat QImage2Mat(QImage const& src);
     QImage Mat2QImage(cv::Mat const& src);
     void paintRect();
-    void paintStartPoint();
-    void markNrOfContour();
+//    void paintStartPoint();
+//    void markNrOfContour();
     void deleteDrawnSelection();
     void paintSubContour();
      void paintMainContour();
